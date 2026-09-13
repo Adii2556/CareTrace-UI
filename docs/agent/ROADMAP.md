@@ -31,3 +31,11 @@ Step 2 READY is the requested planning state, not a claim that authentication is
 absent: [existing Step 2 report](../STEP_2.md) and code predate this workflow.
 Reconcile that baseline during review before invoking Step 2. Step 1.5 did not
 start Step 2 implementation. See [current specification](CURRENT_STEP.md).
+
+## Separately approved design deliverable
+
+2026-09-13 — Static healthcare UI screen brief: **COMPLETE**. Thirteen presentation
+frames and four individual mobile screenshots are in
+[the design screen pack](../design/caretrace-ui/README.md). This is a visual concept,
+not completion of roadmap healthcare modules or Step 14 implementation. The existing
+Step 2 working-file status was preserved; no development step was advanced here.

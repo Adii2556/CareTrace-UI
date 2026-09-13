@@ -1,46 +1,53 @@
 # Latest Handoff
 
-Step: 1.5 — Repository-driven planning, implementation and handoff
-Status: COMPLETE
+## Step
+
+Separately approved CareTrace static UI design brief (13 presentation frames).
+This is distinct from the existing Step 2 authentication work.
+
+## Status
+
+COMPLETE — static visual deliverables verified.
 
 ## Completed
 
-Repository coordination established using Markdown, explicit human approval and
-one-step implementation. Step 2 specification initialized READY; no product changes.
-Historical Step 1 result remains in [STEP_1.md](../STEP_1.md): foundation, minimal
-custom user before migrations, no roles, six tests and local foundation checks.
+Researched NHS, MyChart and Apple Health patterns; established one visual system;
+created the UI kit, ten desktop product screens, a four-phone board and the
+six-stage journey overview. Added four individual mobile PNGs, an image gallery,
+contact sheet and PNG archive. Every screen uses the same fictional referral.
 
 ## Files
 
-AGENTS.md; docs/agent/{PROJECT_CONTEXT,ROADMAP,CURRENT_STEP,HANDOFF,DECISIONS,
-STEP_TEMPLATE}.md; README.md; docs/DEVELOPMENT_RULES.md.
+[Design deliverables and index](../design/caretrace-ui/README.md), including
+screens/, pages/, source/, research, status and verification records; ROADMAP;
+this handoff. No Django application, authentication, model, test or dependency
+changes. The pre-existing CURRENT_STEP.md edit is excluded from this design work.
 
 ## Decisions
 
-Captured existing stack/domain boundaries and adopted Markdown + Git coordination.
-HANDOFF holds the latest result, not an accumulating log. No architecture changes.
+Static HTML/CSS is used only to render consistent screenshots. Medical workflow
+screens are visual concepts, not implemented features. Source and exports are
+separate from the application. The demo is set on 02 Sep 2026; later workflow
+views show the same referral after consent. No architecture decisions changed.
 
 ## Verification
 
-2026-09-13: pip check, Ruff lint/format (37 files), Django checks, migration drift
-check, and all 20 existing tests passed. Production checks passed with the existing
-two documented silences; static collection passed. Documentation links validated.
-Application, templates/static sources, tests, requirements and CI file hashes are
-unchanged. Changes contain documentation only; no credentials or product functionality
-added. Existing tests exercise home/liveness, authentication and account behavior.
+All 17 PNG exports passed browser-error, viewport-overflow and footer/navigation
+overlap checks. Mobile action targets meet 44 × 44 CSS pixels. All eight checked
+text/background pairs exceed 4.5:1 (minimum 5.15:1). Reviewed rendered layouts,
+four-record consent, unselected consent checkbox, unrelated-history exclusion
+and the persistent AI disclaimer. This is not a clinical or user-testing validation.
+
+README commands passed using the existing .venv: pip check; Ruff lint; Ruff format
+check (41 files); Django check; migration drift check; all 20 Django tests.
 
 ## Issues
 
-Step 2 code and [completion report](../STEP_2.md) already existed before this task.
-READY is the explicitly requested planning state; review/reconcile this baseline
-before a separate Step 2 invocation. No fresh browser smoke test was needed for
-unchanged application files. Remote CI/Linux Gunicorn were not run here. Repository
-files were already untracked at inspection. The human subsequently authorized
-publishing this baseline to CareTrace-UI and pushing after every verified step;
-this standing instruction is recorded in AGENTS.md. No deployment performed.
+None in the design deliverables. Existing CURRENT_STEP.md already contained an
+IN_PROGRESS edit for Step 2 when inspected. It is preserved and is not a claim
+that this design task completed Step 2. No live medical integration or deployment.
 
 ## Next
 
-Review Step 1.5 and reconcile the existing Step 2 result. Step 2 is READY in
-[CURRENT_STEP.md](CURRENT_STEP.md); this task did not start its implementation.
-Stop until explicit human instruction.
+Human review of the static screen pack. Any product implementation requires a
+separate explicit instruction; no roadmap implementation step is authorized here.

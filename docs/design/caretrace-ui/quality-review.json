@@ -1,0 +1,60 @@
+{
+  "contrastPairs": [
+    {
+      "label": "Primary text",
+      "foreground": "#1c3042",
+      "background": "#ffffff",
+      "ratio": 13.54
+    },
+    {
+      "label": "Secondary text",
+      "foreground": "#586b79",
+      "background": "#f4f7fa",
+      "ratio": 5.15
+    },
+    {
+      "label": "Primary action",
+      "foreground": "#ffffff",
+      "background": "#174e7a",
+      "ratio": 8.72
+    },
+    {
+      "label": "Information",
+      "foreground": "#174e7a",
+      "background": "#eaf2f9",
+      "ratio": 7.71
+    },
+    {
+      "label": "Privacy",
+      "foreground": "#176a63",
+      "background": "#edf6f4",
+      "ratio": 5.82
+    },
+    {
+      "label": "Approved",
+      "foreground": "#226343",
+      "background": "#edf7f0",
+      "ratio": 6.53
+    },
+    {
+      "label": "Pending",
+      "foreground": "#825500",
+      "background": "#fff6e4",
+      "ratio": 6.02
+    },
+    {
+      "label": "Danger",
+      "foreground": "#a33135",
+      "background": "#fff0f0",
+      "ratio": 6.23
+    }
+  ],
+  "contentChecks": [
+    "Four selected records; two excluded records",
+    "Consent checkbox unselected on patient screen",
+    "Receiving workspace excludes unrelated history",
+    "Audit history has no editing actions",
+    "Persistent AI disclaimer present"
+  ],
+  "reviewScope": "Static visual review; not an accessibility or clinical validation of a working application."
+}

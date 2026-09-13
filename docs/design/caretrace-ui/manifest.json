@@ -1,0 +1,104 @@
+[
+  {
+    "slug": "01-design-system",
+    "title": "Design System / UI Kit",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "02-patient-dashboard",
+    "title": "Patient Dashboard",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "03-medical-timeline",
+    "title": "Medical Timeline",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "04-medical-records",
+    "title": "Medical Records",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "05-select-records",
+    "title": "Select Records for Referral",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "06-patient-consent",
+    "title": "Patient Consent",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "07-referral-tracking",
+    "title": "Referral Tracking",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "08-doctor-workspace",
+    "title": "Receiving Doctor Workspace",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "09-ai-record-explainer",
+    "title": "AI Record Explainer",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "10-emergency-profile",
+    "title": "Emergency Profile",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "11-privacy-access",
+    "title": "Privacy & Access",
+    "width": 1440,
+    "height": 1000
+  },
+  {
+    "slug": "12-mobile-experience",
+    "title": "Mobile Experience",
+    "width": 1920,
+    "height": 1200
+  },
+  {
+    "slug": "13-journey-overview",
+    "title": "CareTrace — One Connected Journey",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "slug": "mobile-consent",
+    "title": "Consent Request",
+    "width": 390,
+    "height": 844
+  },
+  {
+    "slug": "mobile-dashboard",
+    "title": "Dashboard",
+    "width": 390,
+    "height": 844
+  },
+  {
+    "slug": "mobile-status",
+    "title": "Referral Status",
+    "width": 390,
+    "height": 844
+  },
+  {
+    "slug": "mobile-timeline",
+    "title": "Medical Timeline",
+    "width": 390,
+    "height": 844
+  }
+]
