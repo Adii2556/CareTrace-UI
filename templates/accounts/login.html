@@ -1,0 +1,15 @@
+{% extends "layouts/page.html" %}
+{% block title %}Log in | CareTrace{% endblock %}
+{% block page_content %}
+<div class="account-form mx-auto">
+  <h1 class="h2">Log in</h1>
+  <p class="text-body-secondary">Use your CareTrace username and password.</p>
+  <form method="post" action="{% url 'accounts:login' %}">
+    {% csrf_token %}
+    {% include "components/form_fields.html" %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="btn btn-primary">Log in</button>
+  </form>
+  <p class="mt-4">New to CareTrace? <a href="{% url 'accounts:register' %}">Create an account</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+name: Verify foundation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-only-placeholder-key-not-a-deployment-secret-0123456789
+      DJANGO_DEBUG: 'False'
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: requirements/*.txt
+      - name: Install dependencies
+        run: python -m pip install -r requirements/development.txt -r requirements/production.txt
+      - name: Check Python quality
+        run: |
+          python -m ruff check .
+          python -m ruff format --check .
+      - name: Check Django and migrations
+        run: |
+          python manage.py check
+          python manage.py makemigrations --check --dry-run
+          python manage.py migrate --noinput
+      - name: Run tests
+        run: python manage.py test
+      - name: Verify production configuration and static build
+        run: |
+          python manage.py check --deploy --fail-level WARNING --settings=config.settings.production
+          python manage.py collectstatic --noinput --settings=config.settings.production
+      - name: Smoke-test Gunicorn on Linux
+        run: |
+          DJANGO_TRUST_PROXY=True gunicorn config.wsgi:application --bind 127.0.0.1:8000 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 20); do
+            if curl --silent --fail --output /dev/null http://127.0.0.1:8000/health/; then
+              break
+            fi
+            sleep 1
+          done
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8000/health/)" = 301
+          curl --fail --header 'X-Forwarded-Proto: https' http://127.0.0.1:8000/health/
+          curl --fail --header 'X-Forwarded-Proto: https' http://127.0.0.1:8000/
+          curl --fail --header 'X-Forwarded-Proto: https' --output /dev/null http://127.0.0.1:8000/static/css/app.css

@@ -1,0 +1,14 @@
+{% extends "layouts/page.html" %}
+{% block title %}Create account | CareTrace{% endblock %}
+{% block page_content %}
+<div class="account-form mx-auto">
+  <h1 class="h2">Create your account</h1>
+  <p class="text-body-secondary">Choose a username and password to get started. Name and email are optional.</p>
+  <form method="post" action="{% url 'accounts:register' %}">
+    {% csrf_token %}
+    {% include "components/form_fields.html" %}
+    <button type="submit" class="btn btn-primary">Create account</button>
+  </form>
+  <p class="mt-4">Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+/* Shared layout only; visual identity will be refined in an approved later step. */
+.page-content {
+  max-width: 60rem;
+}
+
+.account-form {
+  max-width: 32rem;
+}
+
+.form-control[aria-invalid="true"] {
+  border-color: var(--bs-danger);
+}

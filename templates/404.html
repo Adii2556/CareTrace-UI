@@ -1,0 +1,7 @@
+{% extends "layouts/page.html" %}
+{% block title %}Page not found | CareTrace{% endblock %}
+{% block page_content %}
+<h1 class="h2">Page not found</h1>
+<p>The page you requested could not be found.</p>
+<a href="{% url 'core:home' %}">Return home</a>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "layouts/page.html" %}
+{% block title %}Account | CareTrace{% endblock %}
+{% block page_content %}
+<div class="account-form mx-auto">
+  <h1 class="h2">Account</h1>
+  <p class="text-body-secondary">Manage your basic account information.</p>
+  <dl>
+    <dt>Username</dt><dd class="text-break">{{ user.username }}</dd>
+    <dt>Joined</dt><dd>{{ user.date_joined|date:"F j, Y" }}</dd>
+  </dl>
+  <form method="post" action="{% url 'accounts:profile' %}">
+    {% csrf_token %}
+    {% include "components/form_fields.html" %}
+    <button type="submit" class="btn btn-primary">Save changes</button>
+  </form>
+</div>
+{% endblock %}
