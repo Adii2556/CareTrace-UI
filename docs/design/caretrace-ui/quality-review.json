@@ -1,60 +1,84 @@
 {
+  "date": "2026-09-16",
   "contrastPairs": [
     {
       "label": "Primary text",
-      "foreground": "#1c3042",
-      "background": "#ffffff",
-      "ratio": 13.54
+      "foreground": "#17324A",
+      "background": "#FFFFFF",
+      "ratio": 13.19
     },
     {
       "label": "Secondary text",
-      "foreground": "#586b79",
-      "background": "#f4f7fa",
-      "ratio": 5.15
+      "foreground": "#596D79",
+      "background": "#F6F8F7",
+      "ratio": 5.06
     },
     {
       "label": "Primary action",
-      "foreground": "#ffffff",
-      "background": "#174e7a",
-      "ratio": 8.72
+      "foreground": "#FFFFFF",
+      "background": "#155A8A",
+      "ratio": 7.34
     },
     {
       "label": "Information",
-      "foreground": "#174e7a",
-      "background": "#eaf2f9",
-      "ratio": 7.71
-    },
-    {
-      "label": "Privacy",
-      "foreground": "#176a63",
-      "background": "#edf6f4",
-      "ratio": 5.82
-    },
-    {
-      "label": "Approved",
-      "foreground": "#226343",
-      "background": "#edf7f0",
+      "foreground": "#155A8A",
+      "background": "#EAF3F9",
       "ratio": 6.53
     },
     {
+      "label": "Privacy",
+      "foreground": "#0F766E",
+      "background": "#E7F5F2",
+      "ratio": 4.88
+    },
+    {
+      "label": "Approved",
+      "foreground": "#216A4D",
+      "background": "#EAF6F0",
+      "ratio": 5.86
+    },
+    {
       "label": "Pending",
-      "foreground": "#825500",
-      "background": "#fff6e4",
-      "ratio": 6.02
+      "foreground": "#80540E",
+      "background": "#FFF4DE",
+      "ratio": 6.03
     },
     {
       "label": "Danger",
-      "foreground": "#a33135",
-      "background": "#fff0f0",
-      "ratio": 6.23
+      "foreground": "#AE3535",
+      "background": "#FDECEC",
+      "ratio": 5.47
+    },
+    {
+      "label": "Selected row",
+      "foreground": "#17324A",
+      "background": "#EAF3F9",
+      "ratio": 11.74
+    },
+    {
+      "label": "Lab category",
+      "foreground": "#515C96",
+      "background": "#EEF0FA",
+      "ratio": 5.56
     }
   ],
-  "contentChecks": [
-    "Four selected records; two excluded records",
-    "Consent checkbox unselected on patient screen",
-    "Receiving workspace excludes unrelated history",
-    "Audit history has no editing actions",
-    "Persistent AI disclaimer present"
+  "contentChecks": {
+    "fourSelected": true,
+    "twoExcluded": true,
+    "consentInitiallyUnchecked": true,
+    "fourConsentRecords": true,
+    "doctorExcludesUnrelatedHistory": true,
+    "recordMenusPreserveActions": true,
+    "persistentAIDisclaimer": true,
+    "swatchesMatchTokens": true
+  },
+  "visualReview": [
+    "Dashboard prioritizes the referral above quieter summary cards and a flat activity list.",
+    "Timeline uses a temporal rail, category markers, month dividers and a distinct referral route.",
+    "Records retain source metadata and reduce actions to View, Explain and overflow.",
+    "Selected history and exact four-record package remain immediately distinguishable.",
+    "Consent names both providers, preserves the unselected checkbox, and emphasizes private excluded history.",
+    "All desktop, mobile and journey outputs share Manrope, semantic colors, restrained surfaces and Lucide icons."
   ],
-  "reviewScope": "Static visual review; not an accessibility or clinical validation of a working application."
+  "reviewScope": "Static visual and rendered-text review; not clinical validation, user testing or accessibility certification of a working application."
 }

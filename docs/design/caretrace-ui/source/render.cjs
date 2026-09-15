@@ -21,7 +21,7 @@ const only = process.argv.slice(2);
       const bounds = document.querySelector('.app,.board,.phone,.mobile-board,.journey').getBoundingClientRect();
       const overflow = [...document.querySelectorAll('h1,h2,h3,p,button,.panel,.notice,.phone-content,.screen-foot,.consent-actions')].filter(el => {
         const b = el.getBoundingClientRect();
-        return b.width && (b.right > bounds.right + 1 || b.bottom > bounds.bottom + 1 || b.left < bounds.left - 1);
+        return el.checkVisibility() && b.width && (b.right > bounds.right + 1 || b.bottom > bounds.bottom + 1 || b.left < bounds.left - 1);
       }).map(el => ({ element: el.tagName, class: el.className, bottom: Math.round(el.getBoundingClientRect().bottom), text: el.textContent.slice(0,80) }));
       const overlaps = [...document.querySelectorAll('.content,.phone-content')].flatMap(main => {
         const footer = main.closest('.phone')?.querySelector('.phone-nav') || document.querySelector('.screen-foot');
@@ -44,5 +44,8 @@ const only = process.argv.slice(2);
   await gallery.evaluate(() => Promise.all([...document.images].map(img => img.decode())));
   await gallery.screenshot({ path:path.join(root,'contact-sheet.png'), fullPage:true });
   await browser.close();
-  fs.writeFileSync(path.join(root,'verification.json'), JSON.stringify(results,null,2)+'\n');
+  const previous = only.length && fs.existsSync(path.join(root, 'verification.json')) ? JSON.parse(fs.readFileSync(path.join(root, 'verification.json'))) : [];
+  const merged = [...previous.filter(x => !results.some(r => r.screen === x.screen)), ...results].sort((a,b) => a.screen.localeCompare(b.screen));
+  fs.writeFileSync(path.join(root,'verification.json'), JSON.stringify(merged,null,2)+'\n');
+  if (results.some(r => r.overflow.length || r.overlaps.length || r.smallMobileTargets.length || r.errors.length)) process.exitCode = 1;
 })().catch(e => { console.error(e); process.exit(1); });

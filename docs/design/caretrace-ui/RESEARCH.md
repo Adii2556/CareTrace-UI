@@ -15,14 +15,15 @@ or claims that CareTrace has the referenced products' capabilities.
 
 - Desktop canvas 1440 × 1000 CSS pixels, sidebar 232, header 72, page inset 32.
   Main content spans 1144 pixels within the 1208-pixel application area.
-- Segoe UI, a readable neutral UI sans-serif available on the rendering host.
-  30/22/17/15/13-pixel hierarchy, regular and semibold weights.
-- Deep blue #174E7A; teal #176A63; ink #1C3042; muted #586B79;
-  background #F4F7FA; surface #FFFFFF; border #D7E0E7.
-- Green #226343 on #EDF7F0; amber #825500 on #FFF6E4; red #A33135
-  on #FFF0F0; blue #174E7A on #EAF2F9. Color always has a text label.
-- 8-pixel spacing rhythm with 4/12-pixel subdivisions; 24-pixel panel padding;
-  12-pixel panel corners, 8-pixel control corners; flat borders, no shadows.
+- Manrope variable, bundled locally with its SIL Open Font License.
+  32/22/17/15/13-pixel hierarchy; titles 700, sections 650, body 400.
+- Blue #155A8A, teal #13877E, ink #17324A, warm-neutral canvas #F6F8F7.
+  All palette values live in source/tokens.json and generate the UI-kit swatches.
+- Darker text variants preserve contrast on semantic washes: success #216A4D,
+  pending #80540E, destructive #AE3535, privacy #0F766E. Color has a text label.
+- 8-pixel spacing rhythm with 4/12-pixel subdivisions; 10–14px surface corners,
+  9px controls, subtle 2px/8px elevation only on working surfaces. Flat timelines
+  and activity lists contrast with blue referral priority and teal privacy areas.
 - One Lucide outline icon family at 1.75-pixel stroke. Icons support labels.
 - Shared sidebar, header, patient strip, buttons, inputs, tabs, record rows,
   timeline nodes, referral summary, status chips, banners and audit rows.
@@ -47,3 +48,15 @@ disclaimer. Product controls are visual only.
 
 The human brief overrides decorative skill defaults: no cinematic effects,
 gradients, giant headings, glass, motion, nested bezels or pill controls.
+
+## Visual refinement · 16 September 2026
+
+Revisited NHS design principles and MyChart sharing, and reviewed
+[One Medical](https://www.onemedical.com/) for a warmer, human healthcare tone.
+The resulting design uses clear information grouping, contextual source labels,
+restrained category colors and explicit provider-to-provider transfer motifs.
+It retains the original workflow, content hierarchy and presentation dimensions.
+
+[Manrope source and license](https://github.com/google/fonts/tree/main/ofl/manrope)
+provide a consistent local typeface without adding a package dependency. The
+existing responsive rules remain in place. Mobile compositions retain 44px targets.

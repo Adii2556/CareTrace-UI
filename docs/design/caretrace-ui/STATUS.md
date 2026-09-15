@@ -2,14 +2,18 @@
 
 Status: COMPLETE
 
-Explicitly approved by the attached human brief on 2026-09-13. Deliver 13 ordered
-high-fidelity presentation frames, including a UI kit, ten desktop product views,
-four mobile variants in one frame, and a six-stage journey overview. Use only
-fictional data from the brief. HTML/CSS is a screenshot source, not an application.
+Original screen pack approved 2026-09-13; visual refinement explicitly approved
+by the human and completed 2026-09-16. All 17 outputs preserve the original
+workflow, fictional scenario, role separation and presentation sizes.
 
-This design deliverable is separate from the existing Step 2 development work.
-It does not approve implementation of medical features or change Django routes.
+Shared tokens, local Manrope, category icons, surface hierarchy, navigation,
+referral routing, timeline, record actions, selection and consent were refined.
+UI-kit swatches are generated from the same palette as the CSS.
 
-Verified 2026-09-13: all 17 PNG exports, layout bounds, footer/navigation spacing,
-mobile targets, scenario content and selected color contrast. Existing repository
-checks and all 20 tests passed. See README, verification.json and quality-review.json.
+Verified: all 17 renders, layout bounds, footer/navigation spacing, mobile targets,
+visible text contrast, font loading and scenario checks. All 20 Django tests and
+README repository checks pass. See verification.json, accessibility-review.json
+and quality-review.json. PNG archive is regenerated from the final renders.
+
+This static design task is separate from Step 2 development and does not
+authorize medical implementation or change Django routes.

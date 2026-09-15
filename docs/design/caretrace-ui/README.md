@@ -39,7 +39,8 @@ pending request; tracking, doctor and audit views show the same referral after
 ## Rendering source
 
 `source/build.cjs` composes static HTML from shared components and fictional data;
-`source/styles.css` defines the visual system; `source/icons.json` contains the
+`source/tokens.json` is the palette source of truth; the build generates `tokens.css`
+and the matching UI-kit swatches. `source/styles.css` defines the visual system; `source/icons.json` contains the
 Lucide subset with its adjacent license. `pages/` contains the generated markup.
 These files exist only to render deterministic screenshots. They are independent
 of Django, have no backend or database, and do not implement the pictured controls.
@@ -51,10 +52,11 @@ or service is required. On the current rendering host, from the repository root:
 $env:NODE_PATH = 'C:\Users\adity\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\node_modules'
 node docs/design/caretrace-ui/source/build.cjs
 node docs/design/caretrace-ui/source/render.cjs
+node docs/design/caretrace-ui/source/audit.cjs
 ```
 
-The renderer opens local files in headless Microsoft Edge. Segoe UI must be
-available for identical typography. The PNGs are portable and need no fonts or
+The renderer opens local files in headless Microsoft Edge. Manrope is bundled in
+`source/fonts/` under the SIL Open Font License; no network font requests are used. The PNGs are portable and need no fonts or
 runtime. Open `index.html` directly to inspect the exported artwork.
 
 ## Verification
@@ -63,9 +65,28 @@ All 17 rendered outputs were inspected and checked for viewport overflow,
 footer/navigation overlap and browser errors. Mobile action targets were checked
 against 44 × 44 CSS pixels. [Render results](verification.json) record the outcome.
 [Content and contrast review](quality-review.json) records package/consent checks
-and eight text/background pairings; the lowest checked ratio is 5.15:1.
+and ten semantic color pairings. [Rendered contrast audit](accessibility-review.json)
+checks visible text throughout all 17 frames, including font loading. The lowest
+measured text contrast is 4.61:1. Render and audit commands fail on detected issues.
 
 Existing repository verification passed: pip check, Ruff lint and format,
 Django system check, migration drift check and all 20 Django tests. This is a
 static design review, not user testing, clinical validation or accessibility
 certification of an implemented application.
+
+## Change the color scheme
+
+Edit `source/tokens.json`, then run the build, render and audit commands above.
+Use blue for actions, teal for privacy and authorization, green for completion,
+amber for pending consent, and red for rejection. Strong/dark variants provide
+readable text on washes; accent colors should not replace these text variants.
+Do not edit generated `tokens.css` or palette swatches in generated pages.
+
+After review, rebuild the presentation archive:
+
+```powershell
+Compress-Archive -Path docs/design/caretrace-ui/screens/*.png -DestinationPath docs/design/caretrace-ui/CareTrace-UI-Screens.zip -CompressionLevel Optimal -Force
+```
+
+The pre-redesign backup remains at
+`backups/CareTrace-UI-before-color-change-20260913-235619.zip` from the repository root.

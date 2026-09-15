@@ -39,3 +39,8 @@ frames and four individual mobile screenshots are in
 [the design screen pack](../design/caretrace-ui/README.md). This is a visual concept,
 not completion of roadmap healthcare modules or Step 14 implementation. The existing
 Step 2 working-file status was preserved; no development step was advanced here.
+
+2026-09-16 — Explicitly approved visual refinement: **COMPLETE**. Shared palette,
+Manrope, semantic surfaces, referral/timeline/consent styling and all 17 exports
+updated and verified. This remains static design work, not roadmap Step 14
+application implementation.
