@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,20 +14,39 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='PatientProfile',
+            name="PatientProfile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('role', models.CharField(choices=[('patient', 'Patient'), ('clinician', 'Clinician')], default='patient', max_length=20)),
-                ('caretrace_id', models.CharField(max_length=24, unique=True)),
-                ('date_of_birth', models.DateField(blank=True, null=True)),
-                ('gender', models.CharField(blank=True, max_length=30)),
-                ('blood_group', models.CharField(blank=True, max_length=8)),
-                ('allergies', models.CharField(blank=True, max_length=200)),
-                ('conditions', models.CharField(blank=True, max_length=250)),
-                ('emergency_contact_name', models.CharField(blank=True, max_length=120)),
-                ('emergency_contact_relationship', models.CharField(blank=True, max_length=80)),
-                ('organization', models.CharField(blank=True, max_length=180)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "role",
+                    models.CharField(
+                        choices=[("patient", "Patient"), ("clinician", "Clinician")],
+                        default="patient",
+                        max_length=20,
+                    ),
+                ),
+                ("caretrace_id", models.CharField(max_length=24, unique=True)),
+                ("date_of_birth", models.DateField(blank=True, null=True)),
+                ("gender", models.CharField(blank=True, max_length=30)),
+                ("blood_group", models.CharField(blank=True, max_length=8)),
+                ("allergies", models.CharField(blank=True, max_length=200)),
+                ("conditions", models.CharField(blank=True, max_length=250)),
+                ("emergency_contact_name", models.CharField(blank=True, max_length=120)),
+                ("emergency_contact_relationship", models.CharField(blank=True, max_length=80)),
+                ("organization", models.CharField(blank=True, max_length=180)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="profile",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

@@ -25,7 +25,9 @@ def icon(name, class_name=""):
         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
     ]
     for tag_name, attributes in nodes:
-        attrs = " ".join(f'{escape(key)}="{escape(str(value))}"' for key, value in attributes.items())
+        attrs = " ".join(
+            f'{escape(key)}="{escape(str(value))}"' for key, value in attributes.items()
+        )
         parts.append(f"<{tag_name} {attrs}></{tag_name}>")
     parts.append("</svg>")
     return mark_safe("".join(parts))
@@ -41,4 +43,3 @@ def status_class(status):
         "closed": "neutral",
         "rejected": "red",
     }.get(status, "neutral")
-

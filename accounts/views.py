@@ -7,4 +7,3 @@ class CareTraceLoginView(LoginView):
     authentication_form = CareTraceAuthenticationForm
     template_name = "accounts/login.html"
     redirect_authenticated_user = True
-

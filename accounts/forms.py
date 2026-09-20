@@ -10,7 +10,10 @@ class CareTraceAuthenticationForm(AuthenticationForm):
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "autocomplete": "current-password", "placeholder": "Password"}
+            attrs={
+                "class": "form-control",
+                "autocomplete": "current-password",
+                "placeholder": "Password",
+            }
         )
     )
-

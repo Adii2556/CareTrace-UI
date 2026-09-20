@@ -12,7 +12,9 @@ class Command(BaseCommand):
     help = "Create or refresh the fictional CareTrace demonstration accounts and records."
 
     def add_arguments(self, parser):
-        parser.add_argument("--password", required=True, help="Password assigned to both demo accounts.")
+        parser.add_argument(
+            "--password", required=True, help="Password assigned to both demo accounts."
+        )
 
     def handle(self, *args, **options):
         password = options["password"]

@@ -8,7 +8,10 @@ from .models import ALLOWED_MEDICAL_CONTENT_TYPES, ALLOWED_MEDICAL_EXTENSIONS, M
 class MedicalRecordForm(forms.ModelForm):
     def clean_file(self):
         uploaded_file = self.cleaned_data.get("file")
-        if uploaded_file and Path(uploaded_file.name).suffix.lower() not in ALLOWED_MEDICAL_EXTENSIONS:
+        if (
+            uploaded_file
+            and Path(uploaded_file.name).suffix.lower() not in ALLOWED_MEDICAL_EXTENSIONS
+        ):
             raise forms.ValidationError("Upload a PDF, PNG, JPG, or JPEG file.")
         if uploaded_file and uploaded_file.content_type not in ALLOWED_MEDICAL_CONTENT_TYPES:
             raise forms.ValidationError(

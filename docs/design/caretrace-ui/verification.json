@@ -1,0 +1,155 @@
+[
+  {
+    "screen": "01-design-system",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "02-patient-dashboard",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "03-medical-timeline",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "04-medical-records",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "05-select-records",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "06-patient-consent",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "07-referral-tracking",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "08-doctor-workspace",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "09-ai-record-explainer",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "10-emergency-profile",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "11-privacy-access",
+    "width": 1440,
+    "height": 1000,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "12-mobile-experience",
+    "width": 1920,
+    "height": 1200,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "13-journey-overview",
+    "width": 1920,
+    "height": 1080,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "mobile-consent",
+    "width": 390,
+    "height": 844,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "mobile-dashboard",
+    "width": 390,
+    "height": 844,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "mobile-status",
+    "width": 390,
+    "height": 844,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  },
+  {
+    "screen": "mobile-timeline",
+    "width": 390,
+    "height": 844,
+    "overflow": [],
+    "overlaps": [],
+    "smallMobileTargets": [],
+    "errors": []
+  }
+]

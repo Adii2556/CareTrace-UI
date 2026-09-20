@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
-
 ALLOWED_MEDICAL_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg"}
 ALLOWED_MEDICAL_CONTENT_TYPES = {"application/pdf", "image/png", "image/jpeg"}
 MAX_MEDICAL_FILE_SIZE = 5 * 1024 * 1024

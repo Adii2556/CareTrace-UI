@@ -99,3 +99,9 @@ SQLite and uploaded files require persistent storage on a hosted service. Mount 
 - `static/` — CareTrace design tokens, reference styling, icons, fonts, and interaction JavaScript
 
 Medical and identity data in this repository is synthetic and intended only for demonstration and development.
+
+## Project documentation
+
+- `docs/ARCHITECTURE.md` documents authorization, storage and deployment boundaries.
+- `docs/agent/HANDOFF.md` records the latest verified implementation state.
+- `docs/design/caretrace-ui/` preserves the original 17-screen visual source pack.

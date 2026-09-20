@@ -96,9 +96,7 @@ def timeline(request):
     records_qs = request.user.medical_records.all()
     if query:
         records_qs = records_qs.filter(
-            Q(title__icontains=query)
-            | Q(summary__icontains=query)
-            | Q(provider__icontains=query)
+            Q(title__icontains=query) | Q(summary__icontains=query) | Q(provider__icontains=query)
         )
     return render(
         request,
@@ -120,9 +118,7 @@ def records(request):
     records_qs = request.user.medical_records.all()
     if query:
         records_qs = records_qs.filter(
-            Q(title__icontains=query)
-            | Q(summary__icontains=query)
-            | Q(provider__icontains=query)
+            Q(title__icontains=query) | Q(summary__icontains=query) | Q(provider__icontains=query)
         )
     if category:
         records_qs = records_qs.filter(category=category)
@@ -159,9 +155,7 @@ def add_record(request):
         record.save()
         messages.success(request, "Medical record added securely.")
     else:
-        error_text = " ".join(
-            str(message) for errors in form.errors.values() for message in errors
-        )
+        error_text = " ".join(str(message) for errors in form.errors.values() for message in errors)
         messages.error(request, error_text or "Please correct the record details.")
     return redirect("care:records")
 
@@ -174,9 +168,9 @@ def download_record(request, record_id):
     is_authorized_clinician = bool(
         profile
         and profile.role == PatientProfile.Role.CLINICIAN
-        and record.referrals.filter(clinician=request.user).exclude(
-            status__in=[Referral.Status.PENDING, Referral.Status.REJECTED]
-        ).exists()
+        and record.referrals.filter(clinician=request.user)
+        .exclude(status__in=[Referral.Status.PENDING, Referral.Status.REJECTED])
+        .exists()
     )
     if not (is_owner or is_authorized_clinician) or not record.file:
         from django.core.exceptions import PermissionDenied
@@ -215,7 +209,9 @@ def select_records(request, referral_id):
     if referral.status != Referral.Status.PENDING:
         messages.info(request, "This referral package is locked after patient review.")
         return redirect("care:doctor_workspace", referral_id=referral.id)
-    available_records = referral.patient.medical_records.filter(status=MedicalRecord.Status.AVAILABLE)
+    available_records = referral.patient.medical_records.filter(
+        status=MedicalRecord.Status.AVAILABLE
+    )
     if request.method == "POST":
         selected_ids = request.POST.getlist("records")
         selected = available_records.filter(id__in=selected_ids)

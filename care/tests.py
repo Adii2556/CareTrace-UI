@@ -74,7 +74,9 @@ class CareTraceTestCase(TestCase):
 
     def test_patient_pages_require_login(self):
         response = self.client.get(reverse("care:dashboard"))
-        self.assertRedirects(response, f"{reverse('accounts:login')}?next={reverse('care:dashboard')}")
+        self.assertRedirects(
+            response, f"{reverse('accounts:login')}?next={reverse('care:dashboard')}"
+        )
 
     def test_login_landing_is_role_aware(self):
         self.client.login(username="patient", password="StrongPass!42")

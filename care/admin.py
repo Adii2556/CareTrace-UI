@@ -21,4 +21,3 @@ class ReferralAdmin(admin.ModelAdmin):
 admin.site.register(Appointment)
 admin.site.register(Medication)
 admin.site.register(AccessLog)
-

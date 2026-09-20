@@ -1,9 +1,8 @@
 """Django settings for the CareTrace SIH 2026 prototype."""
 
-from pathlib import Path
 import os
 import secrets
-
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

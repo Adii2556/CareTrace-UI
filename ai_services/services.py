@@ -50,4 +50,3 @@ def explain_medical_record(record) -> str:
     if not content:
         raise AIServiceUnavailable("AI returned an empty response.")
     return content
-
