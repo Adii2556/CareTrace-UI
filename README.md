@@ -94,6 +94,10 @@ Configure Railway's health-check path as `/health/`. That endpoint is exempt fro
 Django's HTTPS redirect because Railway probes it over the private HTTP network;
 all user-facing routes remain HTTPS-only.
 
+The fictional-data demonstration is deployed at
+[`https://web-production-09eb0.up.railway.app/`](https://web-production-09eb0.up.railway.app/).
+Demo credentials are supplied separately and are not stored in this repository.
+
 ## Project layout
 
 - `accounts/` — role-aware profiles and authentication

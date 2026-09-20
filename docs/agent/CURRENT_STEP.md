@@ -1,7 +1,7 @@
 # Current development step
 
 Step: Railway deployment and live verification
-Status: IN_PROGRESS
+Status: COMPLETE
 
 ## Objective
 
@@ -24,3 +24,11 @@ The deployment remains a fictional-data demonstration and makes no regulatory-co
 claim. Do not add family profiles, third-party healthcare exchange or public emergency
 access. Stop if Railway requires a paid-plan purchase or if persistent storage cannot be
 configured safely.
+
+## Result
+
+The fictional-data demo is live at
+`https://web-production-09eb0.up.railway.app/` with a persistent Railway volume,
+production environment settings, automatic GitHub deployments and verified patient
+and clinician login flows. Railway-managed backups/PITR require a Pro plan and were
+not enabled or purchased.

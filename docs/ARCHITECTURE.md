@@ -37,3 +37,6 @@ and hosts, enables HTTPS/security controls, serves collected static assets throu
 WhiteNoise and runs through Gunicorn. SQLite and media require persistent storage on
 Railway. The private `/health/` liveness endpoint is the sole HTTPS-redirect
 exception so Railway can probe it internally without weakening user-facing routes.
+The deployed demonstration uses one replica, `/app/media/db.sqlite3` for SQLite and
+`/app/media` as its persistent volume mount. Railway-managed backups and point-in-time
+recovery are not enabled because they require a Pro plan.

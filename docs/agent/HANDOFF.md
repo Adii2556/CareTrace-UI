@@ -2,48 +2,51 @@
 
 ## Step
 
-Integrated CareTrace Django rebuild from the verified static UI pack.
+Railway deployment and live verification.
 
 ## Status
 
-COMPLETE — implementation and verification completed on 2026-09-20.
+COMPLETE — deployed and verified on 2026-09-20.
 
 ## Completed
 
-Built the patient and clinician CareTrace journeys using the approved Django stack.
-Added authentication, role/ownership authorization, records and protected files,
-explicit referral consent, clinician assignment, access history, responsive templates,
-NVIDIA service isolation, fictional demo data and Railway-compatible configuration.
+Deployed the fictional CareTrace Django demo from GitHub to Railway with production
+settings, HTTPS, a public domain, health checks, automatic deployments and one
+persistent volume for SQLite and media. Seeded the fictional `ananya` and `arjun`
+accounts and verified both live role-aware entry flows.
 
 ## Files
 
-`accounts/`, `care/`, `ai_services/`, `config/`, `templates/`, `static/`, migrations,
-tests, CI, README and the preserved `docs/design/caretrace-ui/` reference pack.
+`config/settings.py`, `care/tests.py`, `README.md`, `docs/ARCHITECTURE.md`,
+`docs/agent/CURRENT_STEP.md`, `docs/agent/ROADMAP.md` and this handoff.
 
 ## Decisions
 
-Use a simple Django monolith. Keep patient medical data separate from login identity.
-Allow clinicians to see only assigned, consented referral packages and prevent package
-changes after patient review. Never infer clinical data or expose uploaded media publicly.
+Keep HTTPS enforcement for every user-facing route and exempt only `/health/` for
+Railway's private HTTP probe. Keep the demo at one replica because SQLite and media
+share an attached volume. Store credentials only in Railway/user handoff, never Git.
 
 ## Verification
 
+- Railway deployment and `/health/`: online.
+- Patient login (`ananya`) and dashboard: passed in the live browser.
+- Clinician login (`arjun`) and referral workspace: passed in the live browser.
+- Browser console warnings/errors: none.
 - `python manage.py check`: passed.
-- `python manage.py check --deploy`: passed with production environment values.
+- `python manage.py check --deploy`: passed with only the intentionally disabled
+  HSTS subdomain/preload notices.
 - `python manage.py makemigrations --check --dry-run`: no changes.
-- `python manage.py test`: 16 tests passed.
-- `python manage.py collectstatic --noinput`: passed.
-- `python -m pip check`: passed.
-- Desktop/mobile browser QA: authentication, routing, records, filtering, modal,
-  consent, QR, referral status, clinician selection, responsive navigation and console.
+- `python manage.py test`: 17 tests passed.
+- Ruff lint/format, static collection and `pip check`: passed.
 
 ## Issues
 
-No implementation blocker. Production hosting still requires secrets, HTTPS/proxy
-verification, persistent SQLite/media storage and backups. The repository contains
-fictional demo content only and makes no compliance claim.
+Railway-managed backups/PITR require a Pro plan and were not purchased. The workspace
+shows a trial allowance of three days or $5 remaining, so continued availability
+requires the owner to choose a Railway plan before the trial expires. The service is
+a fictional-data prototype and makes no compliance claim.
 
 ## Next
 
-Human review of the pushed rebuild. Do not begin another roadmap item without an
-explicit instruction.
+Owner decision on Railway billing and backups. Do not begin another roadmap item
+without an explicit instruction.

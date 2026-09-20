@@ -12,8 +12,9 @@
 | Integrated responsive CareTrace UI | COMPLETE |
 | Security checks, automated tests and CI | COMPLETE |
 | Railway-compatible configuration | COMPLETE |
+| Public Railway hosting and persistent-volume provisioning | COMPLETE |
+| Railway-managed volume backups/PITR | BLOCKED; Pro plan purchase required |
 | Family-linked profiles | PLANNED; separate approval required |
-| Public hosting, persistent-volume provisioning and backup policy | PLANNED; separate approval required |
 | External healthcare exchange integrations | PLANNED; separate approval required |
 
 This roadmap is directional. A planned item is not authorization to implement it.
