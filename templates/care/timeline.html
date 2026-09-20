@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load caretrace_ui %}
+{% block title %}Medical Timeline · CareTrace{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Medical Timeline</h1><p>Your health history, organized by date.</p></div>{% include "components/profile_switch.html" %}</div>
+<form class="filters" method="get" role="search">
+  <label class="field search" for="timeline-search">{% icon "Search" %}<input id="timeline-search" name="q" value="{{ query }}" placeholder="Search your timeline"><button class="btn compact" type="submit">Search</button></label>
+  <a class="btn" href="{% url 'care:timeline' %}">{% icon "Filter" %}Clear</a>
+</form>
+<div class="split timeline-layout">
+  <section aria-label="Medical history">
+    {% if referral %}
+    <article class="timeline-event">
+      <div class="timeline-date"><strong>{{ referral.requested_at|date:"d M" }}</strong>{{ referral.requested_at|date:"Y" }}</div>
+      <div class="timeline-rail"><span class="timeline-dot"><span class="iconbox category-Route">{% icon "Route" %}</span></span></div>
+      <div class="panel highlight"><div class="row between"><div><h3>{{ referral.reason }} Referral</h3><p class="description">{{ referral.referring_provider }} → {{ referral.receiving_provider }}</p></div><span class="chip {{ referral.status|status_class }}">{{ referral.get_status_display }}</span></div><div class="event-actions">{% if referral.status == 'pending' %}<a class="link" href="{% url 'care:patient_consent' referral.id %}">Review Referral →</a>{% else %}<a class="link" href="{% url 'care:referral_tracking' referral.id %}">Track Referral →</a>{% endif %}</div></div>
+    </article>
+    {% endif %}
+    {% for record in records %}
+    <article class="timeline-event {% if forloop.last %}last{% endif %}">
+      <div class="timeline-date"><strong>{{ record.recorded_on|date:"d M" }}</strong>{{ record.recorded_on|date:"Y" }}</div>
+      <div class="timeline-rail"><span class="timeline-dot"><span class="iconbox">{% icon record.icon_name %}</span></span></div>
+      <div class="panel"><div class="row start"><div class="grow"><h3>{{ record.title }}</h3><p class="description">{{ record.summary|default:record.provider }}</p><p class="small muted mt8">{{ record.provider }}</p><div class="event-actions">{% if record.file %}<a class="link" href="{% url 'care:download_record' record.id %}">View record</a>{% endif %}<a class="link" href="{% url 'care:explain_record' record.id %}">Explain</a></div></div><span class="chip {% if record.status == 'pending' %}amber{% else %}green{% endif %}">{{ record.get_status_display }}</span></div></div>
+    </article>
+    {% empty %}<div class="panel empty-state">No records match your search.</div>{% endfor %}
+  </section>
+  <aside class="stack">
+    {% if referral %}<div class="panel"><div class="eyebrow">Current referral</div><h3 class="mt8">{{ referral.reason }}</h3><p class="small muted mt8">{{ referral.reference_id }} · {{ referral.get_status_display }}</p><div class="care-transfer compact mt24"><div><span class="transfer-label">From</span><strong>{{ referral.referring_provider }}</strong></div><span class="transfer-connector">{% icon "ArrowRight" %}</span><div><span class="transfer-label">To</span><strong>{{ referral.receiving_provider }}</strong></div></div><a class="btn primary full mt24" href="{% if referral.status == 'pending' %}{% url 'care:patient_consent' referral.id %}{% else %}{% url 'care:referral_tracking' referral.id %}{% endif %}">View referral</a></div>{% endif %}
+    <div class="notice teal">{% icon "ShieldCheck" %}<div>Your timeline is visible only to you unless you approve a referral package.</div></div>
+  </aside>
+</div>
+{% endblock %}

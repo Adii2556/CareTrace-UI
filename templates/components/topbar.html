@@ -1,0 +1,17 @@
+{% load caretrace_ui %}
+<header class="topbar">
+  <button class="mobile-menu-toggle" type="button" data-sidebar-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation">{% icon "LayoutDashboard" %}</button>
+  <div class="topbar-search" aria-hidden="true">{% icon "Search" %}<span>{% if profile.role == 'clinician' %}Search referrals or patients{% else %}Search your health information{% endif %}</span><kbd>/</kbd></div>
+  <div class="row gap24 topbar-actions">
+    <span class="small muted language-label">English</span>
+    <button class="icon-button" type="button" aria-label="Notifications">{% icon "Bell" %}</button>
+    <div class="row gap8 top-user">
+      <span class="avatar">{{ profile.initials }}</span>
+      <div class="top-user-copy"><strong class="small">{{ request.user.get_full_name|default:request.user.username }}</strong><div class="small muted">{{ profile.get_role_display }}</div></div>
+    </div>
+    <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
+      {% csrf_token %}<button class="btn tertiary compact" type="submit">Log out</button>
+    </form>
+  </div>
+</header>
+

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load caretrace_ui %}
+{% block title %}Patient Dashboard · CareTrace{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Good morning, {{ request.user.first_name|default:request.user.username }}</h1><p>Here’s what needs your attention.</p></div>
+  {% include "components/profile_switch.html" %}
+</div>
+
+{% if pending_referral %}
+<section class="panel attention priority mb24">
+  <div class="row between attention-layout">
+    <div>
+      <div class="eyebrow">Referral awaiting your consent</div>
+      <h2>{{ pending_referral.reason }}</h2>
+      <div class="care-transfer">
+        <div><span class="transfer-label">Referring provider</span><strong>{{ pending_referral.referring_provider }}</strong></div>
+        <span class="transfer-connector">{% icon "ArrowRight" %}</span>
+        <div><span class="transfer-label">Receiving provider</span><strong>{{ pending_referral.receiving_provider }}</strong></div>
+      </div>
+      <p class="small muted mt16">{{ pending_referral.requested_by }} has selected {{ pending_referral.selected_records.count }} relevant records for your review.</p>
+    </div>
+    <div class="stack16 attention-actions"><span class="chip amber">{% icon "Clock3" %}Consent Required</span><a class="btn primary" href="{% url 'care:patient_consent' pending_referral.id %}">{% icon "ArrowRight" %}Review Referral</a></div>
+  </div>
+</section>
+{% elif latest_referral %}
+<section class="notice teal mb24">{% icon "ShieldCheck" %}<div><strong>{{ latest_referral.reason }} referral: {{ latest_referral.get_status_display }}</strong><br><a href="{% url 'care:referral_tracking' latest_referral.id %}">View referral progress</a></div></section>
+{% endif %}
+
+<div class="four summary-grid mb24">
+  <div class="panel summary"><span class="iconbox">{% icon "CalendarDays" %}</span><div class="label">Upcoming Appointment</div><h3>{% if upcoming %}{{ upcoming.scheduled_for|date:"d M · h:i A" }}{% else %}No appointment{% endif %}</h3><p class="small muted mt8">{% if upcoming %}{{ upcoming.specialty }} · {{ upcoming.provider }}{% else %}Nothing scheduled{% endif %}</p></div>
+  <div class="panel summary"><span class="iconbox category-FlaskConical">{% icon "FlaskConical" %}</span><div class="label">Pending Test</div><h3>{{ pending_test.title|default:"No pending tests" }}</h3><p class="small muted mt8">{{ pending_test.summary|default:"All results available" }}</p></div>
+  <div class="panel summary"><span class="iconbox category-Pill">{% icon "Pill" %}</span><div class="label">Active Medicine</div><h3>{% if active_medication %}{{ active_medication.name }} {{ active_medication.dosage }}{% else %}None listed{% endif %}</h3><p class="small muted mt8">{% if active_medication %}From your current prescription{% else %}No active medicine{% endif %}</p></div>
+  <div class="panel summary"><span class="iconbox category-FileCheck2">{% icon "FileCheck2" %}</span><div class="label">Latest Result</div><h3>{{ latest_result.title|default:"No results" }}</h3><p class="small mt8 result-available">{% if latest_result %}Available · {{ latest_result.recorded_on|date:"d M Y" }}{% else %}—{% endif %}</p></div>
+</div>
+
+<div class="row between mb24 quick-action-header"><h3>Quick Actions</h3><div class="quick-actions"><a class="btn" href="{% url 'care:records' %}#add-record">{% icon "Plus" %}Add Record</a><a class="btn" href="{% url 'care:records' %}#add-record">{% icon "Upload" %}Upload</a><a class="btn" href="{% url 'care:records' %}">{% icon "ScanLine" %}Scan</a>{% if latest_referral %}<a class="btn" href="{% url 'care:referral_tracking' latest_referral.id %}">{% icon "Share2" %}Share</a>{% endif %}</div></div>
+
+<div class="split dashboard-lower">
+  <section class="panel flush">
+    <div class="panel-head"><h3>Recent Medical Activity</h3><a class="link small" href="{% url 'care:timeline' %}">View Timeline →</a></div>
+    {% for activity in recent_activity %}
+    <div class="list-row"><span class="iconbox category-{{ activity.icon }}">{% icon activity.icon %}</span><div class="grow"><strong>{{ activity.title }}</strong><p>{{ activity.summary }}</p></div><span class="small muted">{{ activity.date|date:"d M Y" }}</span>{% icon "ChevronRight" %}</div>
+    {% empty %}<div class="empty-state">No recent medical activity yet.</div>{% endfor %}
+  </section>
+  <aside class="stack">
+    <div class="panel privacy-surface"><div class="row gap8"><span class="iconbox">{% icon "ShieldCheck" %}</span><h3>Your privacy at a glance</h3></div><p class="small muted mt16">{% if pending_referral %}You have one sharing request to review. Your records stay private until you give consent.{% else %}Review who has accessed records shared through CareTrace.{% endif %}</p><hr class="rule"><a class="link small" href="{% url 'care:privacy_access' %}">Privacy &amp; Access →</a></div>
+    <div class="notice teal">{% icon "Route" %}<div><strong>A connected care journey</strong><br>Keep your history together. Choose the records that move with each referral.</div></div>
+  </aside>
+</div>
+{% endblock %}
+

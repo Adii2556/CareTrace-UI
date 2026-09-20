@@ -1,0 +1,101 @@
+# CareTrace
+
+CareTrace is a Django healthcare continuity prototype that helps a patient keep a longitudinal record, choose exactly which records accompany a referral, explicitly approve access, and review an access trail. Clinicians can open a referral workspace only after patient consent.
+
+This repository rebuilds the supplied CareTrace interface as a dynamic application. The original static reference remains the visual source of truth; this implementation adds server-rendered data, authentication, ownership checks, consent enforcement, protected downloads, and tested workflows without introducing a JavaScript framework.
+
+## Stack
+
+- Python 3.14 and Django 6.1
+- SQLite
+- Django templates and forms
+- Bootstrap 5 plus project CSS
+- Vanilla JavaScript
+- WhiteNoise for collected static files in the deployed Django service
+- Optional NVIDIA API integration for plain-language record explanations
+
+## Local setup
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_demo --password "choose-a-local-demo-password"
+python manage.py runserver
+```
+
+Open `http://127.0.0.1:8000/accounts/login/` and sign in as either demo user:
+
+- Patient: `ananya`
+- Clinician: `arjun`
+
+Both accounts use the password supplied to `seed_demo`. Demo records are fictional.
+
+The project reads configuration from environment variables. Django does not parse `.env` automatically, so load those values through your shell or hosting provider. Never commit a production secret or NVIDIA API key.
+
+## Key workflows
+
+- Patient dashboard, longitudinal timeline, record search/filtering, upload, and protected download
+- Referral package selection with patient-owned records only
+- Explicit, unchecked-by-default consent or rejection
+- Clinician referral workspace gated by consent and permitted record IDs
+- Server-validated referral status transitions
+- Privacy/access log and emergency summary
+- Plain-language record explanation with a safe unavailable/error state when NVIDIA is not configured
+
+Authorization is enforced in Django views and querysets. Hiding a link is never treated as an access-control boundary.
+
+## Quality checks
+
+```powershell
+python manage.py check
+python manage.py makemigrations --check --dry-run
+python manage.py test
+```
+
+For a production-oriented configuration check:
+
+```powershell
+$env:DJANGO_DEBUG="False"
+$env:DJANGO_SECRET_KEY="replace-with-a-long-random-value"
+$env:DJANGO_ALLOWED_HOSTS="your-domain.example"
+python manage.py check --deploy
+```
+
+## Environment variables
+
+| Variable | Purpose |
+| --- | --- |
+| `DJANGO_SECRET_KEY` | Required when debug mode is disabled |
+| `DJANGO_DEBUG` | `True` locally; `False` in production |
+| `DJANGO_ALLOWED_HOSTS` | Comma-separated hostnames |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | Comma-separated HTTPS origins |
+| `DJANGO_SECURE_SSL_REDIRECT` | Redirect HTTP to HTTPS; defaults on in production |
+| `DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS` | Enable only when every subdomain is HTTPS-only |
+| `DJANGO_SECURE_HSTS_PRELOAD` | Enable only after reviewing HSTS preload requirements |
+| `DJANGO_TIME_ZONE` | Defaults to `Asia/Kolkata` |
+| `DJANGO_DB_PATH` | Optional SQLite path |
+| `NVIDIA_API_KEY` | Optional; enables generation of new explanations |
+| `NVIDIA_MODEL` | Optional NVIDIA model override |
+
+## Railway deployment
+
+Create a Python service from this repository, set the production environment variables above, and use the included `Procfile`. Run migrations before serving the app:
+
+```powershell
+python manage.py migrate
+python manage.py collectstatic --noinput
+```
+
+SQLite and uploaded files require persistent storage on a hosted service. Mount a Railway volume, set `DJANGO_DB_PATH` to a file on that volume, and preserve the `media` directory there. For a multi-instance production deployment, migrate the same Django models to a managed relational database and durable object storage rather than sharing SQLite.
+
+## Project layout
+
+- `accounts/` — role-aware profiles and authentication
+- `care/` — records, referrals, consent, access logs, forms, views, and tests
+- `ai_services/` — isolated NVIDIA API client
+- `templates/` — reusable Django template shell and feature pages
+- `static/` — CareTrace design tokens, reference styling, icons, fonts, and interaction JavaScript
+
+Medical and identity data in this repository is synthetic and intended only for demonstration and development.

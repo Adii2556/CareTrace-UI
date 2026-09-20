@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load caretrace_ui %}
+{% block title %}Medical Records · CareTrace{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Medical Records</h1><p>All reports, prescriptions and documents in one place.</p></div><div class="row gap8"><button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#recordModal">{% icon "Upload" %}Upload</button><button class="btn primary" type="button" data-bs-toggle="modal" data-bs-target="#recordModal">{% icon "Plus" %}Add Record</button></div></div>
+<form class="filters record-filters" method="get">
+  <label class="field search" for="record-search">{% icon "Search" %}<input id="record-search" name="q" value="{{ query }}" placeholder="Search records"></label>
+  <select class="form-select" name="category" aria-label="Record category"><option value="">All records</option>{% for value,label in categories %}<option value="{{ value }}" {% if category == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+  <select class="form-select" name="provider" aria-label="Provider"><option value="">All providers</option>{% for item in providers %}<option value="{{ item }}" {% if provider == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select>
+  <button class="btn" type="submit">Apply</button>
+</form>
+<section class="panel flush records-table-panel">
+  <div class="table-responsive">
+    <table class="table records-table">
+      <thead><tr><th scope="col">Record</th><th scope="col">Date</th><th scope="col">Provider</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
+      <tbody>
+      {% for record in records %}<tr><td><div class="row gap8"><span class="iconbox category-{{ record.icon_name }}">{% icon record.icon_name %}</span><div><div class="record-title">{{ record.title }}</div><div class="meta">{{ record.get_category_display }}{% if record.summary %} · {{ record.summary }}{% endif %}</div></div></div></td><td>{{ record.recorded_on|date:"d M Y" }}</td><td>{{ record.provider }}</td><td><span class="chip {% if record.status == 'pending' %}amber{% else %}green{% endif %}">{{ record.get_status_display }}</span></td><td><div class="actions">{% if record.file %}<a href="{% url 'care:download_record' record.id %}">Download</a>{% endif %}<a href="{% url 'care:explain_record' record.id %}">Explain</a></div></td></tr>
+      {% empty %}<tr><td colspan="5"><div class="empty-state">No records match these filters.</div></td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="modal fade" id="recordModal" tabindex="-1" aria-labelledby="recordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content"><form method="post" action="{% url 'care:add_record' %}" enctype="multipart/form-data">
+    {% csrf_token %}<div class="modal-header"><div><h2 class="modal-title fs-5" id="recordModalLabel">Add a medical record</h2><p class="small muted mt8">PDF, PNG or JPG · maximum 5 MB</p></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+    <div class="modal-body">{% for field in record_form %}<div class="mb-3"><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}</div>{% endfor %}</div>
+    <div class="modal-footer"><button class="btn" type="button" data-bs-dismiss="modal">Cancel</button><button class="btn primary" type="submit">Save record</button></div>
+  </form></div></div>
+</div>
+{% endblock %}
+{% block extra_js %}<script>if (location.hash === '#add-record') { window.addEventListener('DOMContentLoaded', () => bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show()); }</script>{% endblock %}
+

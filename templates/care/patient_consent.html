@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static caretrace_ui %}
+{% block title %}Patient Consent · CareTrace{% endblock %}
+{% block content %}
+<div class="breadcrumb">Referrals {% icon "ChevronRight" %} {{ referral.reason }}</div>
+<div class="page-head"><div><h1>Review Referral Sharing Request</h1><p>Review who receives your information and exactly what is included.</p></div>{% include "components/profile_switch.html" %}</div>
+<div class="row between consent-meta"><div class="row gap8"><span class="chip amber">{% icon "Clock3" %}{{ referral.get_status_display }}</span><span class="small muted">{{ referral.reference_id }} · Requested {{ referral.requested_at|date:"d M Y" }}</span></div><span class="small muted">For {{ request.user.get_full_name }} · {{ profile.caretrace_id }}</span></div>
+<div class="split consent-layout">
+  <section class="stack16">
+    <div class="panel flush">
+      <div class="consent-summary"><div><div class="eyebrow">Requested by</div><h3>{{ referral.requested_by }}</h3><p class="small muted mt8">{{ referral.referring_provider }}</p></div><span class="consent-route-arrow">{% icon "ArrowRight" %}</span><div><div class="eyebrow">Who will receive it</div><h3>{{ referral.receiving_provider }}</h3><p class="small muted mt8">Receiving clinician: {{ referral.receiving_clinician }}</p></div><div class="wide"><div class="eyebrow">Why</div><h3>{{ referral.reason }}</h3></div></div>
+      <div class="panel-head"><h3>What will be shared</h3><span class="small muted">Exactly {{ referral.selected_records.count }} records</span></div>
+      {% for record in referral.selected_records.all %}<div class="consent-row"><span class="iconbox category-{{ record.icon_name }}">{% icon record.icon_name %}</span><div class="grow"><strong>{{ record.title }}</strong><p>{{ record.recorded_on|date:"d M Y" }}</p></div>{% if record.file %}<a class="btn tertiary compact" href="{% url 'care:download_record' record.id %}">View</a>{% endif %}</div>{% endfor %}
+    </div>
+    <div class="notice teal">{% icon "LockKeyhole" %}<div><strong>Only these {{ referral.selected_records.count }} records will be shared.</strong><br>Your other medical records will remain private.</div></div>
+    {% if referral.status == 'pending' %}
+    <form class="panel consent-decision" method="post" data-consent-form>
+      {% csrf_token %}<label class="consent-check"><input class="form-check-input" type="checkbox" name="confirm_share" data-consent-checkbox><span>I understand what information will be shared.</span></label>
+      <div class="consent-actions"><button class="btn danger" type="submit" name="action" value="reject">Reject</button><button class="btn primary" type="submit" name="action" value="approve" data-consent-submit disabled>{% icon "ShieldCheck" %}Approve Sharing</button></div>
+    </form>
+    {% else %}<div class="notice teal">{% icon "CheckCheck" %}<div>This request has already been reviewed. <a href="{% url 'care:referral_tracking' referral.id %}">View its current status.</a></div></div>{% endif %}
+  </section>
+  <aside class="stack">
+    <div class="panel privacy-surface"><div class="row gap8"><span class="iconbox">{% icon "ShieldCheck" %}</span><h3>Your choice matters</h3></div><p class="small muted mt16">Review each record before deciding. Nothing in this request is shared until you approve.</p><hr class="rule"><h3>After you approve</h3><div class="vertical-progress mt24"><div class="progress-item"><span class="progress-mark">1</span><div><strong>Only these records</strong><p>Included in the referral package.</p></div></div><div class="progress-item"><span class="progress-mark">2</span><div><strong>The receiving provider</strong><p>Can view the authorized package.</p></div></div><div class="progress-item"><span class="progress-mark">3</span><div><strong>A visible access history</strong><p>See who viewed your records.</p></div></div></div></div>
+    <div class="panel referral-qr-card"><div class="referral-qr-head"><div class="row gap8"><span class="iconbox">{% icon "Route" %}</span><div><h3>Referral QR</h3><p class="small muted">Quick hospital handoff</p></div></div><span class="chip amber">{{ referral.get_status_display }}</span></div><div class="referral-qr-shell"><img src="{% static 'images/qrcode.png' %}" alt="Referral QR code for {{ referral.reference_id }}"></div><div class="referral-qr-meta"><div><div class="eyebrow">Referral ID</div><strong>{{ referral.reference_id }}</strong></div><div><div class="eyebrow">Purpose</div><strong>{{ referral.reason }}</strong></div></div></div>
+    <p class="small muted">Need to clarify this request?<br>Contact {{ referral.requested_by }} at your referring health centre.</p>
+  </aside>
+</div>
+{% endblock %}
+

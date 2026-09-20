@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load caretrace_ui %}
+{% block title %}Select Records for Referral · CareTrace{% endblock %}
+{% block content %}
+<div class="breadcrumb">Referrals {% icon "ChevronRight" %} {{ referral.reason }}</div>
+<div class="page-head"><div><h1>Select relevant medical history</h1><p>Choose only the records needed for this referral.</p></div><span class="chip">{{ selected_ids|length }} selected</span></div>
+<div class="stepper" aria-label="Referral steps"><div class="step done"><span class="step-num">{% icon "Check" %}</span>Patient</div><span class="step-line"></span><div class="step done"><span class="step-num">{% icon "Check" %}</span>Referral reason</div><span class="step-line"></span><div class="step current"><span class="step-num">3</span>Select records</div><span class="step-line"></span><div class="step"><span class="step-num">4</span>Patient consent</div></div>
+<form method="post">
+  {% csrf_token %}
+  <div class="split">
+    <section class="panel flush">
+      <div class="panel-head"><h3>Available medical history</h3><span class="small muted">{{ records.count }} records</span></div>
+      {% for record in records %}
+      <label class="select-row {% if record.id in selected_ids %}selected{% endif %}">
+        <input class="form-check-input" type="checkbox" name="records" value="{{ record.id }}" {% if record.id in selected_ids %}checked{% endif %}>
+        <span class="iconbox category-{{ record.icon_name }}">{% icon record.icon_name %}</span>
+        <span class="grow"><strong>{{ record.title }}</strong><span class="record-subtext">{{ record.provider }}</span></span><span class="date">{{ record.recorded_on|date:"d M Y" }}</span>
+      </label>
+      {% endfor %}
+    </section>
+    <aside class="panel package"><div class="eyebrow">Referral package</div><h3 class="mt8">{{ referral.reason }}</h3><p class="small muted mt8">{{ referral.reference_id }} · {{ referral.receiving_provider }}</p><ul class="package-list">{% for record in referral.selected_records.all %}<li>{% icon record.icon_name %}<span>{{ record.title }}</span></li>{% empty %}<li>No records selected</li>{% endfor %}</ul><div class="notice teal">{% icon "LockKeyhole" %}<div>Only this selected history will be offered to the patient for consent.</div></div><button class="btn primary full mt24" type="submit">Save selection</button></aside>
+  </div>
+</form>
+{% endblock %}
+
