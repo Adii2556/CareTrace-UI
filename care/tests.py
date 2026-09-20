@@ -67,10 +67,17 @@ class CareTraceTestCase(TestCase):
         )
         self.referral.selected_records.add(self.record)
 
+    @override_settings(SECURE_SSL_REDIRECT=True)
     def test_healthcheck_is_public(self):
         response = self.client.get(reverse("care:healthcheck"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["service"], "caretrace")
+
+    @override_settings(SECURE_SSL_REDIRECT=True)
+    def test_https_redirect_still_applies_outside_healthcheck(self):
+        response = self.client.get(reverse("care:dashboard"))
+        self.assertEqual(response.status_code, 301)
+        self.assertEqual(response["Location"], "https://testserver/dashboard/")
 
     def test_patient_pages_require_login(self):
         response = self.client.get(reverse("care:dashboard"))

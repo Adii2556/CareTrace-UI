@@ -35,5 +35,5 @@ content is fictional.
 Shared settings are environment-driven. Production disables debug, requires a secret
 and hosts, enables HTTPS/security controls, serves collected static assets through
 WhiteNoise and runs through Gunicorn. SQLite and media require persistent storage on
-Railway. The repository contains deployment-compatible configuration, not a live
-deployment or managed backup policy.
+Railway. The private `/health/` liveness endpoint is the sole HTTPS-redirect
+exception so Railway can probe it internally without weakening user-facing routes.

@@ -90,6 +90,10 @@ python manage.py collectstatic --noinput
 
 SQLite and uploaded files require persistent storage on a hosted service. Mount a Railway volume, set `DJANGO_DB_PATH` to a file on that volume, and preserve the `media` directory there. For a multi-instance production deployment, migrate the same Django models to a managed relational database and durable object storage rather than sharing SQLite.
 
+Configure Railway's health-check path as `/health/`. That endpoint is exempt from
+Django's HTTPS redirect because Railway probes it over the private HTTP network;
+all user-facing routes remain HTTPS-only.
+
 ## Project layout
 
 - `accounts/` — role-aware profiles and authentication

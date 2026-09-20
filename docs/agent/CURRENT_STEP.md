@@ -1,15 +1,15 @@
 # Current development step
 
-Step: Integrated CareTrace Django rebuild
-Status: COMPLETE
+Step: Railway deployment and live verification
+Status: IN_PROGRESS
 
 ## Objective
 
-Faithfully convert the supplied CareTrace static interface into a coherent Django
-application using Python, Django Templates, Bootstrap 5, vanilla JavaScript, SQLite,
-Django authentication/media storage and the optional NVIDIA/Nemotron API.
+Deploy the verified CareTrace Django application to Railway with production settings,
+persistent SQLite/media storage, a public HTTPS domain and fictional demo accounts;
+then verify the live patient and clinician entry flows.
 
-## Completed scope
+## Existing verified scope
 
 - Shared responsive shell and supplied CareTrace visual system.
 - Patient dashboard, timeline, records, filtering, upload, explainer, emergency and privacy views.
@@ -18,10 +18,9 @@ Django authentication/media storage and the optional NVIDIA/Nemotron API.
 - Railway-compatible Gunicorn/WhiteNoise configuration and CI.
 - Migrations, fictional demo seed, README and automated/browser verification.
 
-## Boundary
+## Deployment boundary
 
-The application is a demonstration and makes no regulatory-compliance claim. Family
-profiles, production deployment, third-party healthcare exchange and public emergency
-access remain outside this completed rebuild.
-
-Further product work requires a new explicit instruction.
+The deployment remains a fictional-data demonstration and makes no regulatory-compliance
+claim. Do not add family profiles, third-party healthcare exchange or public emergency
+access. Stop if Railway requires a paid-plan purchase or if persistent storage cannot be
+configured safely.
