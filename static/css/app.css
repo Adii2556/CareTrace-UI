@@ -44,6 +44,11 @@ a.nav-item:hover { color: var(--blue); background: #f3f8fb; }
   line-height: 1.25;
   box-shadow: none;
 }
+.top-user { min-width: max-content; }
+.top-user .avatar { width: 40px; height: 40px; flex: 0 0 40px; }
+.top-user-copy { display: grid; gap: 2px; min-width: 0; line-height: 1.2; }
+.top-user-name { display: block; color: var(--ink); font-size: 14px; font-weight: 700; line-height: 1.25; white-space: nowrap; }
+.top-user-role { display: block; color: var(--muted); font-size: 12px; font-weight: 500; line-height: 1.25; white-space: nowrap; }
 .logout-form { margin: 0; }
 .logout-form .btn { min-height: 36px; }
 .message-stack { margin-bottom: 18px; }

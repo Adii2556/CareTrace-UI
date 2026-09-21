@@ -35,3 +35,7 @@ No model, migration, dependency or environment-variable change was required.
 Follow-up: the `/` keyboard badge now has explicit CareTrace foreground/background
 styles and remains visible at the mobile breakpoint instead of inheriting Bootstrap's
 white key text and the static reference pack's mobile hiding rule.
+
+Follow-up: the top-right account identity now uses dedicated name/role typography and
+a fixed 40 x 40 initials avatar, preventing Bootstrap row rules from shrinking the
+avatar or making the patient name wrap unpredictably.

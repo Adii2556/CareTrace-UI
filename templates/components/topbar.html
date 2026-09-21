@@ -11,7 +11,10 @@
     <button class="icon-button" type="button" aria-label="Notifications">{% icon "Bell" %}</button>
     <div class="row gap8 top-user">
       <span class="avatar">{{ profile.initials }}</span>
-      <div class="top-user-copy"><strong class="small">{{ request.user.get_full_name|default:request.user.username }}</strong><div class="small muted">{{ profile.get_role_display }}</div></div>
+      <div class="top-user-copy">
+        <span class="top-user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        <span class="top-user-role">{{ profile.get_role_display }}</span>
+      </div>
     </div>
     <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
       {% csrf_token %}<button class="btn tertiary compact" type="submit">Log out</button>

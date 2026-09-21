@@ -362,3 +362,59 @@ The fix was pushed as commit `9e8dc81`. Railway was healthy and the Global Searc
 was active, but its cache-bypassed public stylesheet still served the previous shortcut
 rule at the final check. The automatic deployment had not reached this follow-up commit;
 a manual Railway deploy/restart may be needed if it does not advance automatically.
+
+## Feature 2 Follow-up — Top-right Patient Identity
+
+### Objective
+
+Correct the top-right patient name/title presentation so the account identity has a
+clear hierarchy, stable alignment and no unintended avatar compression.
+
+### Changes
+
+- Replaced generic `.small` markup with dedicated patient-name and role-label classes.
+- Added explicit single-line typography for the account name and a smaller muted role.
+- Fixed the initials avatar at 40 x 40 pixels so Bootstrap's row-child width override
+  cannot compress the circle beside the title.
+
+### Files Modified
+
+- `templates/components/topbar.html`
+- `static/css/app.css`
+- `docs/agent/CURRENT_STEP.md`
+- `docs/agent/HANDOFF.md`
+- `DEVELOPMENT_LOG.md`
+
+### Database Changes
+
+None.
+
+### Tests Performed
+
+- `python manage.py check`: passed.
+- `python manage.py makemigrations --check --dry-run`: no changes detected.
+- `python -m ruff check .`: passed.
+- `python -m ruff format --check .`: all 54 Python files formatted.
+- `python manage.py test`: all 32 tests passed.
+- Browser QA at 1440 x 900 and 1024 x 768: `Ananya Sharma` remained a single-line
+  primary title, `Patient` remained secondary, the avatar measured 40 x 40 pixels, the
+  identity stayed inside the viewport, and console warnings/errors were empty.
+
+### Bugs Found
+
+The account identity reused generic `.small` styles, and the shared Bootstrap row-child
+override changed the avatar width to `auto`, compressing the intended circle to about
+20 pixels in the rendered header.
+
+### Fixes
+
+Added component-specific name/role styles and an explicit non-shrinking avatar basis.
+
+### Result
+
+Working. The top-right patient identity is aligned, readable and responsive.
+
+### Known Limitations
+
+At the mobile breakpoint the name and role remain intentionally hidden to preserve
+header space; the initials avatar remains visible.

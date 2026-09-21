@@ -16,12 +16,16 @@ case-insensitive and partial. Results follow existing patient ownership, referra
 relationship and consent rules; no global patient or record directory was introduced.
 Fixed the `/` keyboard-shortcut badge so it is readable and visible in both desktop and
 mobile search bars while continuing to focus the search input.
+Fixed the top-right account identity so the patient name is the clear, single-line title,
+the role is secondary, and the initials avatar retains its intended circular size.
 
 ## Files
 
 Search view/URL/tests, shared top bar, search-results template, responsive styles,
 README, architecture/decision/roadmap/current-step docs and `DEVELOPMENT_LOG.md`.
 The follow-up changed only `static/css/app.css` and completion documentation.
+The account-title follow-up changed `templates/components/topbar.html`, shared CSS and
+completion documentation.
 
 ## Decisions
 
@@ -40,6 +44,9 @@ do not add autocomplete, an API or a separate search service.
   horizontal overflow or browser console warnings/errors.
 - Slash-badge follow-up at 1440 x 900 and 390 x 844: visible with explicit contrasting
   colors; `/` focused `#global-search`; no console warnings/errors or overflow.
+- Patient-title follow-up at 1440 x 900 and 1024 x 768: name stayed on one line, avatar
+  remained 40 x 40, and the identity stayed within the viewport without console errors
+  or horizontal overflow.
 - Feature commit `db2f1ea` and slash-badge fix `9e8dc81` pushed to `origin/main`; local
   HEAD and upstream matched after each push.
 
