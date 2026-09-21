@@ -418,3 +418,8 @@ Working. The top-right patient identity is aligned, readable and responsive.
 
 At the mobile breakpoint the name and role remain intentionally hidden to preserve
 header space; the initials avatar remains visible.
+
+The fix was pushed as commit `e4e69f8`. Railway remained healthy, but its cache-bypassed
+public stylesheet did not contain the new patient-title or fixed-avatar rules by the
+final deployment check. A manual Railway deploy/restart may be needed if the linked
+service does not advance automatically.

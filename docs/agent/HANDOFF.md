@@ -47,8 +47,8 @@ do not add autocomplete, an API or a separate search service.
 - Patient-title follow-up at 1440 x 900 and 1024 x 768: name stayed on one line, avatar
   remained 40 x 40, and the identity stayed within the viewport without console errors
   or horizontal overflow.
-- Feature commit `db2f1ea` and slash-badge fix `9e8dc81` pushed to `origin/main`; local
-  HEAD and upstream matched after each push.
+- Feature commit `db2f1ea`, slash-badge fix `9e8dc81` and patient-identity fix `e4e69f8`
+  pushed to `origin/main`; local HEAD and upstream matched after each push.
 
 ## Issues
 
@@ -57,10 +57,10 @@ tests were rerun successfully with `.venv`. No database, dependency, secret or
 environment-variable change was required.
 
 Railway is healthy (HTTP 200 at `/health/`) and now protects `/search/` with the expected
-login redirect. Its public `app.css` still served the pre-fix shortcut rule at the final
-cache-bypassed check, so commit `9e8dc81` had not become active yet. This workspace has
-no Railway CLI; the linked service may need a manual deploy/restart if it does not
-advance automatically.
+login redirect. Its public `app.css` still predates the UI follow-ups at the final
+cache-bypassed check: neither the slash-badge rule nor the patient-identity rule was
+present. This workspace has no Railway CLI; the linked service may need a manual
+deploy/restart if it does not advance automatically.
 
 ## Next
 
