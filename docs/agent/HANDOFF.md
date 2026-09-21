@@ -40,7 +40,8 @@ do not add autocomplete, an API or a separate search service.
   horizontal overflow or browser console warnings/errors.
 - Slash-badge follow-up at 1440 x 900 and 390 x 844: visible with explicit contrasting
   colors; `/` focused `#global-search`; no console warnings/errors or overflow.
-- Feature commit `db2f1ea` pushed to `origin/main`; local HEAD and upstream matched.
+- Feature commit `db2f1ea` and slash-badge fix `9e8dc81` pushed to `origin/main`; local
+  HEAD and upstream matched after each push.
 
 ## Issues
 
@@ -48,10 +49,11 @@ The first test invocation used the system Python without project dependencies; a
 tests were rerun successfully with `.venv`. No database, dependency, secret or
 environment-variable change was required.
 
-Railway remained healthy (HTTP 200 at `/health/`) but still returned HTTP 404 for the
-new `/search/` route through the final post-push check, so its automatic deployment had
-not advanced to the pushed commit. This workspace has no Railway CLI; deployment must
-be observed or restarted from Railway if the linked service does not update.
+Railway is healthy (HTTP 200 at `/health/`) and now protects `/search/` with the expected
+login redirect. Its public `app.css` still served the pre-fix shortcut rule at the final
+cache-bypassed check, so commit `9e8dc81` had not become active yet. This workspace has
+no Railway CLI; the linked service may need a manual deploy/restart if it does not
+advance automatically.
 
 ## Next
 

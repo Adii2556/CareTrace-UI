@@ -358,4 +358,7 @@ desktop and mobile.
 
 ### Known Limitations
 
-None specific to this visual fix.
+The fix was pushed as commit `9e8dc81`. Railway was healthy and the Global Search route
+was active, but its cache-bypassed public stylesheet still served the previous shortcut
+rule at the final check. The automatic deployment had not reached this follow-up commit;
+a manual Railway deploy/restart may be needed if it does not advance automatically.
