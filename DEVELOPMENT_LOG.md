@@ -268,6 +268,10 @@ required.
   clinician queries, grouped results, authorized detail links, empty/no-result states,
   `/` focus shortcut and responsive layout passed; no console warnings/errors or
   horizontal overflow.
+- Feature commit `db2f1ea` pushed to `origin/main`; local HEAD and upstream matched.
+- Railway post-push smoke check: `/health/` returned HTTP 200, while `/search/` remained
+  HTTP 404 after repeated checks, indicating that the service had not deployed the new
+  commit yet.
 
 ## Bugs Found
 
@@ -296,3 +300,6 @@ any later feature.
 - CareTrace has no separate provider or hospital model, so those names are matched
   through the existing referral and medical-record fields and link to their parent
   object.
+- The GitHub update is complete, but Railway had not advanced to the new commit by the
+  final smoke check. No Railway CLI is configured in this workspace; the linked service
+  may need a manual deploy/restart if it does not update automatically.

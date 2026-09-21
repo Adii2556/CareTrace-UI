@@ -35,12 +35,18 @@ do not add autocomplete, an API or a separate search service.
 - Production-style deploy check: only deliberate HSTS subdomain/preload notices.
 - Patient and clinician browser flows at 1440 x 900 and 390 x 844: passed with no
   horizontal overflow or browser console warnings/errors.
+- Feature commit `db2f1ea` pushed to `origin/main`; local HEAD and upstream matched.
 
 ## Issues
 
 The first test invocation used the system Python without project dependencies; all
 tests were rerun successfully with `.venv`. No database, dependency, secret or
 environment-variable change was required.
+
+Railway remained healthy (HTTP 200 at `/health/`) but still returned HTTP 404 for the
+new `/search/` route through the final post-push check, so its automatic deployment had
+not advanced to the pushed commit. This workspace has no Railway CLI; deployment must
+be observed or restarted from Railway if the linked service does not update.
 
 ## Next
 
