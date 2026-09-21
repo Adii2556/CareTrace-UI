@@ -511,3 +511,14 @@ disabled immediately after judging.
 
 Production seeding should use `seed_demo --unusable-password` so the fixed public demo
 identities cannot also authenticate through the credential form.
+
+### Deployment Confirmation — 2026-09-22
+
+- Pushed the isolated feature commit to both CareTrace repositories without force-push.
+- Enabled `DJANGO_DEMO_QUICK_LOGIN=True` on Railway and deployed successfully.
+- Seeded only the fictional `ananya` and `arjun` identities with unusable passwords;
+  production verification confirmed both return `False` from `has_usable_password()`.
+- Verified live patient and clinician quick-login flows, a 200 health response, a 405
+  response for GET on the POST-only endpoint, and a 403 response for POST without CSRF.
+- Confirmed the login response includes secure CSRF cookies, HSTS, frame denial,
+  content-type protection, same-origin referrer policy and no-store caching.
