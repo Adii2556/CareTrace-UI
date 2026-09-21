@@ -22,10 +22,18 @@ Browser
 ## Security boundaries
 
 Patient pages require the patient role and always query through `request.user`.
-Clinician referral access requires both assignment and recorded patient consent.
-The referral package is locked after patient review. Downloads are served by an
-authorized Django view, not exposed as public media URLs. Uploads validate extension,
-content type, size and ownership. Logout and all state changes use POST with CSRF.
+Referral creation records an authenticated referring clinician separately from the
+destination clinician. To avoid a global patient directory without inventing a new
+care-team model, the create form offers only patients already connected to the creator
+through a referral. Provider names and organizations are derived server-side from the
+authenticated profiles rather than trusted from submitted text.
+
+The patient and referring clinician can review the prepared referral. A destination
+clinician can see referral routing metadata, but clinical context and selected records
+require recorded patient consent. The referral package is locked after patient review.
+Downloads are served by an authorized Django view, not exposed as public media URLs.
+Uploads validate extension, content type, size and ownership. Logout and all state
+changes use POST with CSRF.
 
 The application does not claim regulatory compliance. All committed/demo clinical
 content is fictional.

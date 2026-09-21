@@ -7,7 +7,7 @@
     <div class="eyebrow workspace-label">Clinical workspace</div>
     <nav>
       <a class="nav-item" href="{% url 'care:home' %}">{% icon "LayoutDashboard" %}<span>Workspace</span></a>
-      <a class="nav-item {% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:home' %}">{% icon "Route" %}<span>Referrals</span></a>
+      <a class="nav-item {% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}">{% icon "Route" %}<span>Referrals</span></a>
       <span class="nav-item nav-disabled">{% icon "Users" %}<span>Patients</span></span>
       <span class="nav-item nav-disabled">{% icon "ShieldCheck" %}<span>Access History</span></span>
     </nav>
@@ -22,13 +22,7 @@
       <a class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}" href="{% url 'care:dashboard' %}">{% icon "LayoutDashboard" %}<span>Dashboard</span></a>
       <a class="nav-item {% if active_nav == 'timeline' %}active{% endif %}" href="{% url 'care:timeline' %}">{% icon "History" %}<span>Timeline</span></a>
       <a class="nav-item {% if active_nav == 'records' %}active{% endif %}" href="{% url 'care:records' %}">{% icon "Files" %}<span>Records</span></a>
-      {% if request.user.referrals.first %}
-        {% with referral=request.user.referrals.first %}
-        <a class="nav-item {% if active_nav == 'referrals' %}active{% endif %}" href="{% if referral.status == 'pending' %}{% url 'care:patient_consent' referral.id %}{% else %}{% url 'care:referral_tracking' referral.id %}{% endif %}">{% icon "Route" %}<span>Referrals</span>{% if pending_referral_count %}<span class="nav-count">{{ pending_referral_count }}</span>{% endif %}</a>
-        {% endwith %}
-      {% else %}
-        <span class="nav-item nav-disabled">{% icon "Route" %}<span>Referrals</span></span>
-      {% endif %}
+      <a class="nav-item {% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}">{% icon "Route" %}<span>Referrals</span>{% if pending_referral_count %}<span class="nav-count">{{ pending_referral_count }}</span>{% endif %}</a>
       {% if default_explain_record %}<a class="nav-item {% if active_nav == 'explain' %}active{% endif %}" href="{% url 'care:explain_record' default_explain_record.id %}">{% icon "BookOpen" %}<span>Explain</span></a>{% endif %}
     </nav>
     <div class="sidebar-bottom">

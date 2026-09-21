@@ -3,7 +3,6 @@
   <a class="{% if active_nav == 'dashboard' %}active{% endif %}" href="{% url 'care:dashboard' %}">{% icon "LayoutDashboard" %}<span>Home</span></a>
   <a class="{% if active_nav == 'timeline' %}active{% endif %}" href="{% url 'care:timeline' %}">{% icon "History" %}<span>Timeline</span></a>
   <a class="{% if active_nav == 'records' %}active{% endif %}" href="{% url 'care:records' %}">{% icon "Files" %}<span>Records</span></a>
-  {% with referral=request.user.referrals.first %}{% if referral %}<a class="{% if active_nav == 'referrals' %}active{% endif %}" href="{% if referral.status == 'pending' %}{% url 'care:patient_consent' referral.id %}{% else %}{% url 'care:referral_tracking' referral.id %}{% endif %}">{% icon "Route" %}<span>Care</span></a>{% endif %}{% endwith %}
+  <a class="{% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}">{% icon "Route" %}<span>Care</span></a>
   <a class="{% if active_nav == 'profile' %}active{% endif %}" href="{% url 'care:emergency_profile' %}">{% icon "UserRound" %}<span>Profile</span></a>
 </nav>
-

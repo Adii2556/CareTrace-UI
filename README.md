@@ -37,6 +37,9 @@ The project reads configuration from environment variables. Django does not pars
 ## Key workflows
 
 - Patient dashboard, longitudinal timeline, record search/filtering, upload, and protected download
+- Clinician referral creation for already-connected patients with validated destination,
+  clinical context and priority
+- Permission-scoped referral history and detail pages for patients and clinicians
 - Referral package selection with patient-owned records only
 - Explicit, unchecked-by-default consent or rejection
 - Clinician referral workspace gated by consent and permitted record IDs

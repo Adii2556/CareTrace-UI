@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load caretrace_ui %}
+{% block title %}Create Referral · CareTrace{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{% url 'care:referral_list' %}">Referrals</a>{% icon "ChevronRight" %}Create referral</div>
+<div class="page-head"><div><h1>Create Referral</h1><p>Prepare a focused referral for patient review and consent.</p></div></div>
+{% if not has_available_patients %}
+<div class="notice amber mb24">{% icon "TriangleAlert" %}<div><strong>No connected patients are available.</strong><br>A clinician can create a referral only for a patient already connected through an assigned referral. Ask an administrator to establish the initial relationship.</div></div>
+{% endif %}
+<form method="post" class="panel referral-form" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="form-grid">
+    {% for field in form %}
+    <div class="form-group {% if field.name == 'clinical_summary' or field.name == 'notes' %}wide{% endif %}">
+      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span aria-hidden="true"> *</span>{% endif %}</label>
+      {{ field }}
+      {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+      {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  <div class="notice neutral mt24">{% icon "Info" %}<div>Current medications, allergies and documents remain linked to the patient's existing CareTrace record. You will select only the relevant documents after creating the referral.</div></div>
+  <div class="form-actions mt24"><a class="btn" href="{% url 'care:referral_list' %}">Cancel</a><button class="btn primary" type="submit" {% if not has_available_patients %}disabled{% endif %}>{% icon "Route" %}Create referral and select records</button></div>
+</form>
+{% endblock %}

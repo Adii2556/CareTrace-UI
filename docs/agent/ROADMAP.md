@@ -7,6 +7,10 @@
 | Medical records, protected upload/download and filters | COMPLETE |
 | Longitudinal medical timeline | COMPLETE |
 | Referral selection, consent, tracking and clinician workspace | COMPLETE |
+| Create Referral product workflow, history and detail | COMPLETE |
+| Global Search Bar | PLANNED; requires explicit `GO` |
+| Language Switcher | PLANNED; requires completion and approval of Feature 2 |
+| AI4Bharat integration | PLANNED; requires completion and approval of Feature 3 |
 | Privacy/access history and emergency account view | COMPLETE |
 | NVIDIA/Nemotron service boundary and safe fallback | COMPLETE |
 | Integrated responsive CareTrace UI | COMPLETE |

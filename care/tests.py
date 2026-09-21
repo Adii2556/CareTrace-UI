@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase, override_settings
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -45,6 +45,18 @@ class CareTraceTestCase(TestCase):
             caretrace_id="CT-CL-1",
             organization="Sanjeevani District Hospital",
         )
+        self.destination_clinician = User.objects.create_user(
+            username="destination",
+            password="StrongPass!42",
+            first_name="Nila",
+            last_name="Krishnan",
+        )
+        PatientProfile.objects.create(
+            user=self.destination_clinician,
+            role=PatientProfile.Role.CLINICIAN,
+            caretrace_id="CT-CL-DEST",
+            organization="Coastal Heart Institute",
+        )
         self.record = MedicalRecord.objects.create(
             patient=self.patient,
             title="CBC Blood Test",
@@ -56,9 +68,13 @@ class CareTraceTestCase(TestCase):
         self.record.file.save("report.pdf", ContentFile(b"fictional report"), save=True)
         self.referral = Referral.objects.create(
             patient=self.patient,
+            created_by=self.clinician,
             clinician=self.clinician,
             reference_id="CT-RF-TEST",
             reason="Cardiology Evaluation",
+            specialty="Cardiology",
+            clinical_summary="Hypertension follow-up requiring specialist review.",
+            diagnosis="Hypertension",
             requested_by="Dr. Meera Rao",
             referring_provider="Shantipur PHC",
             receiving_provider="Sanjeevani District Hospital",
@@ -66,6 +82,20 @@ class CareTraceTestCase(TestCase):
             requested_at=timezone.now(),
         )
         self.referral.selected_records.add(self.record)
+
+    def referral_form_data(self, **overrides):
+        data = {
+            "patient": self.patient.id,
+            "clinician": self.destination_clinician.id,
+            "specialty": "Cardiology",
+            "reason": "Specialist cardiac review",
+            "clinical_summary": "Persistent symptoms requiring specialist review.",
+            "diagnosis": "Hypertension",
+            "priority": Referral.Priority.URGENT,
+            "notes": "Please review the attached report.",
+        }
+        data.update(overrides)
+        return data
 
     @override_settings(SECURE_SSL_REDIRECT=True)
     def test_healthcheck_is_public(self):
@@ -84,6 +114,126 @@ class CareTraceTestCase(TestCase):
         self.assertRedirects(
             response, f"{reverse('accounts:login')}?next={reverse('care:dashboard')}"
         )
+
+    def test_only_clinicians_can_open_create_referral(self):
+        self.client.login(username="patient", password="StrongPass!42")
+        self.assertEqual(self.client.get(reverse("care:create_referral")).status_code, 403)
+        self.client.logout()
+        self.client.login(username="clinician", password="StrongPass!42")
+        response = self.client.get(reverse("care:create_referral"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Referral")
+
+    def test_create_form_lists_only_connected_patients(self):
+        self.client.login(username="clinician", password="StrongPass!42")
+        response = self.client.get(reverse("care:create_referral"))
+        patient_ids = set(
+            response.context["form"].fields["patient"].queryset.values_list("id", flat=True)
+        )
+        self.assertEqual(patient_ids, {self.patient.id})
+
+    def test_clinician_can_create_referral_with_derived_provider_identity(self):
+        self.client.login(username="clinician", password="StrongPass!42")
+        response = self.client.post(reverse("care:create_referral"), self.referral_form_data())
+        created = Referral.objects.get(reason="Specialist cardiac review")
+        self.assertRedirects(response, reverse("care:select_records", args=[created.id]))
+        self.assertEqual(created.created_by, self.clinician)
+        self.assertEqual(created.requested_by, "Arjun Mehta")
+        self.assertEqual(created.referring_provider, "Sanjeevani District Hospital")
+        self.assertEqual(created.receiving_clinician, "Nila Krishnan")
+        self.assertEqual(created.receiving_provider, "Coastal Heart Institute")
+        self.assertEqual(created.status, Referral.Status.PENDING)
+        self.assertTrue(created.reference_id.startswith("CT-RF-"))
+
+    def test_clinician_cannot_create_referral_for_unconnected_patient(self):
+        self.client.login(username="clinician", password="StrongPass!42")
+        response = self.client.post(
+            reverse("care:create_referral"),
+            self.referral_form_data(patient=self.other_patient.id),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Select a valid choice")
+        self.assertFalse(Referral.objects.filter(reason="Specialist cardiac review").exists())
+
+    def test_create_referral_requires_csrf_token(self):
+        csrf_client = Client(enforce_csrf_checks=True)
+        csrf_client.login(username="clinician", password="StrongPass!42")
+        response = csrf_client.post(reverse("care:create_referral"), self.referral_form_data())
+        self.assertEqual(response.status_code, 403)
+
+    def test_creator_can_select_only_the_referred_patients_records(self):
+        other_record = MedicalRecord.objects.create(
+            patient=self.other_patient,
+            title="Private other-patient report",
+            category=MedicalRecord.Category.OTHER,
+            provider="Other provider",
+            recorded_on=date(2026, 8, 1),
+        )
+        referral = Referral.objects.create(
+            patient=self.patient,
+            created_by=self.clinician,
+            clinician=self.destination_clinician,
+            reason="Specialist cardiac review",
+            specialty="Cardiology",
+            requested_by="Arjun Mehta",
+            referring_provider="Sanjeevani District Hospital",
+            receiving_provider="Coastal Heart Institute",
+            receiving_clinician="Nila Krishnan",
+        )
+        self.client.login(username="clinician", password="StrongPass!42")
+        response = self.client.post(
+            reverse("care:select_records", args=[referral.id]),
+            {"records": [self.record.id, other_record.id]},
+        )
+        self.assertRedirects(response, reverse("care:referral_detail", args=[referral.id]))
+        self.assertEqual(list(referral.selected_records.all()), [self.record])
+
+    def test_referral_lists_are_scoped_to_the_signed_in_user(self):
+        unrelated = Referral.objects.create(
+            patient=self.other_patient,
+            created_by=self.destination_clinician,
+            clinician=self.destination_clinician,
+            reason="Unrelated referral",
+            requested_by="Nila Krishnan",
+            referring_provider="Coastal Heart Institute",
+            receiving_provider="Coastal Heart Institute",
+            receiving_clinician="Nila Krishnan",
+        )
+        self.client.login(username="patient", password="StrongPass!42")
+        patient_response = self.client.get(reverse("care:referral_list"))
+        self.assertContains(patient_response, self.referral.reference_id)
+        self.assertNotContains(patient_response, unrelated.reference_id)
+        self.client.logout()
+        self.client.login(username="clinician", password="StrongPass!42")
+        clinician_response = self.client.get(reverse("care:referral_list"))
+        self.assertContains(clinician_response, self.referral.reference_id)
+        self.assertNotContains(clinician_response, unrelated.reference_id)
+
+    def test_destination_context_is_hidden_until_patient_consent(self):
+        referral = Referral.objects.create(
+            patient=self.patient,
+            created_by=self.clinician,
+            clinician=self.destination_clinician,
+            reason="Specialist cardiac review",
+            clinical_summary="Sensitive clinical context for consent.",
+            requested_by="Arjun Mehta",
+            referring_provider="Sanjeevani District Hospital",
+            receiving_provider="Coastal Heart Institute",
+            receiving_clinician="Nila Krishnan",
+        )
+        referral.selected_records.add(self.record)
+        self.client.login(username="destination", password="StrongPass!42")
+        url = reverse("care:referral_detail", args=[referral.id])
+        pending_response = self.client.get(url)
+        self.assertContains(pending_response, "awaiting patient consent")
+        self.assertNotContains(pending_response, "Sensitive clinical context")
+        self.assertNotContains(pending_response, self.record.title)
+        referral.status = Referral.Status.SHARED
+        referral.consented_at = timezone.now()
+        referral.save(update_fields=["status", "consented_at"])
+        consented_response = self.client.get(url)
+        self.assertContains(consented_response, "Sensitive clinical context")
+        self.assertContains(consented_response, self.record.title)
 
     def test_login_landing_is_role_aware(self):
         self.client.login(username="patient", password="StrongPass!42")

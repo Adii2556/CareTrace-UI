@@ -1,8 +1,10 @@
 from pathlib import Path
+from uuid import uuid4
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 ALLOWED_MEDICAL_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg"}
 ALLOWED_MEDICAL_CONTENT_TYPES = {"application/pdf", "image/png", "image/jpeg"}
@@ -23,6 +25,10 @@ def validate_medical_file(uploaded_file):
 def medical_record_path(instance, filename):
     safe_name = Path(filename).name
     return f"medical_records/user_{instance.patient_id}/{safe_name}"
+
+
+def generate_referral_reference_id() -> str:
+    return f"CT-RF-{uuid4().hex[:10].upper()}"
 
 
 class MedicalRecord(models.Model):
@@ -109,7 +115,19 @@ class Referral(models.Model):
         CLOSED = "closed", "Closed"
         REJECTED = "rejected", "Rejected"
 
+    class Priority(models.TextChoices):
+        ROUTINE = "Routine", "Routine"
+        URGENT = "Urgent", "Urgent"
+        EMERGENCY = "Emergency", "Emergency"
+
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="referrals")
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="created_referrals",
+        null=True,
+        blank=True,
+    )
     clinician = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
@@ -117,15 +135,21 @@ class Referral(models.Model):
         null=True,
         blank=True,
     )
-    reference_id = models.CharField(max_length=32, unique=True)
+    reference_id = models.CharField(
+        max_length=32, unique=True, default=generate_referral_reference_id
+    )
     reason = models.CharField(max_length=180)
+    specialty = models.CharField(max_length=120, blank=True)
+    clinical_summary = models.TextField(blank=True)
+    diagnosis = models.CharField(max_length=200, blank=True)
+    notes = models.TextField(blank=True)
     requested_by = models.CharField(max_length=160)
     referring_provider = models.CharField(max_length=180)
     receiving_provider = models.CharField(max_length=180)
     receiving_clinician = models.CharField(max_length=160)
-    priority = models.CharField(max_length=40, default="Routine")
+    priority = models.CharField(max_length=40, choices=Priority.choices, default=Priority.ROUTINE)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
-    requested_at = models.DateTimeField()
+    requested_at = models.DateTimeField(default=timezone.now)
     consented_at = models.DateTimeField(null=True, blank=True)
     received_at = models.DateTimeField(null=True, blank=True)
     selected_records = models.ManyToManyField(MedicalRecord, related_name="referrals", blank=True)

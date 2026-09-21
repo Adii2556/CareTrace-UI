@@ -12,9 +12,23 @@ class MedicalRecordAdmin(admin.ModelAdmin):
 
 @admin.register(Referral)
 class ReferralAdmin(admin.ModelAdmin):
-    list_display = ("reference_id", "patient", "reason", "status", "receiving_provider")
-    list_filter = ("status", "priority")
-    search_fields = ("reference_id", "patient__username", "reason")
+    list_display = (
+        "reference_id",
+        "patient",
+        "created_by",
+        "reason",
+        "status",
+        "receiving_provider",
+    )
+    list_filter = ("status", "priority", "specialty")
+    search_fields = (
+        "reference_id",
+        "patient__username",
+        "patient__first_name",
+        "patient__last_name",
+        "reason",
+        "specialty",
+    )
     filter_horizontal = ("selected_records",)
 
 

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load caretrace_ui %}
+{% block title %}Referrals · CareTrace{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Referrals</h1><p>{% if profile.role == 'clinician' %}Create and follow authorized patient referrals.{% else %}Review referral requests and track shared care.{% endif %}</p></div>{% if profile.role == 'clinician' %}<a class="btn primary" href="{% url 'care:create_referral' %}">{% icon "Plus" %}Create Referral</a>{% endif %}</div>
+<section class="panel flush">
+  <div class="panel-head"><h3>Referral history</h3><span class="small muted">{{ referrals|length }} total</span></div>
+  {% for referral in referrals %}
+  <article class="list-row referral-list-row">
+    <span class="iconbox">{% icon "Route" %}</span>
+    <div class="grow"><strong>{{ referral.reason }}</strong><p>{{ referral.reference_id }} · {{ referral.patient.get_full_name|default:referral.patient.username }} · {{ referral.receiving_provider }}</p></div>
+    <div class="referral-list-meta"><span class="chip {{ referral.status|status_class }}">{{ referral.get_status_display }}</span><span class="small muted">{{ referral.requested_at|date:"d M Y" }}</span></div>
+    <a class="btn tertiary compact" href="{% url 'care:referral_detail' referral.id %}">View details</a>
+  </article>
+  {% empty %}
+  <div class="empty-state"><h3>No referrals yet</h3><p class="mt8">{% if profile.role == 'clinician' %}Create a referral when a connected patient needs continued care.{% else %}New referral requests will appear here for your review.{% endif %}</p></div>
+  {% endfor %}
+</section>
+{% endblock %}

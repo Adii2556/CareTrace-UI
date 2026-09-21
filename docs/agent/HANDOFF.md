@@ -2,51 +2,47 @@
 
 ## Step
 
-Railway deployment and live verification.
+Feature 1 — Create Referral.
 
 ## Status
 
-COMPLETE — deployed and verified on 2026-09-20.
+COMPLETE — implemented and verified on 2026-09-21.
 
 ## Completed
 
-Deployed the fictional CareTrace Django demo from GitHub to Railway with production
-settings, HTTPS, a public domain, health checks, automatic deployments and one
-persistent volume for SQLite and media. Seeded the fictional `ananya` and `arjun`
-accounts and verified both live role-aware entry flows.
+Added a permission-aware referral creation form, list and detail experience. Referring
+provider identity is derived from the authenticated clinician, the patient choice is
+limited to an existing clinical relationship, selected records remain patient-owned,
+and destination clinical context remains consent-gated.
 
 ## Files
 
-`config/settings.py`, `care/tests.py`, `README.md`, `docs/ARCHITECTURE.md`,
-`docs/agent/CURRENT_STEP.md`, `docs/agent/ROADMAP.md` and this handoff.
+Referral model/migration, form, views, URLs, tests, seed/admin integration, three care
+templates, shared referral navigation/style, README, architecture/decision/roadmap docs
+and `DEVELOPMENT_LOG.md`.
 
 ## Decisions
 
-Keep HTTPS enforcement for every user-facing route and exempt only `/health/` for
-Railway's private HTTP probe. Keep the demo at one replica because SQLite and media
-share an attached volume. Store credentials only in Railway/user handoff, never Git.
+Store referring clinician separately from destination clinician. Restrict patient
+choices to existing referral relationships until a dedicated access-grant model exists.
+Keep the established pending/shared/received/closed/rejected status convention.
 
 ## Verification
 
-- Railway deployment and `/health/`: online.
-- Patient login (`ananya`) and dashboard: passed in the live browser.
-- Clinician login (`arjun`) and referral workspace: passed in the live browser.
-- Browser console warnings/errors: none.
-- `python manage.py check`: passed.
-- `python manage.py check --deploy`: passed with only the intentionally disabled
-  HSTS subdomain/preload notices.
-- `python manage.py makemigrations --check --dry-run`: no changes.
-- `python manage.py test`: 17 tests passed.
-- Ruff lint/format, static collection and `pip check`: passed.
+- Django check and migration drift check: passed.
+- Full/focused Django suite: 25 tests passed.
+- Ruff lint/format and pip dependency checks: passed.
+- Fresh isolated migration and fictional seed: passed.
+- Static collection: passed.
+- Production-style deploy check: only deliberate HSTS subdomain/preload notices.
+- Desktop and 390px browser flows: passed with no console errors or overflow.
 
 ## Issues
 
-Railway-managed backups/PITR require a Pro plan and were not purchased. The workspace
-shows a trial allowance of three days or $5 remaining, so continued availability
-requires the owner to choose a Railway plan before the trial expires. The service is
-a fictional-data prototype and makes no compliance claim.
+The first patient-clinician connection still requires administration because CareTrace
+does not yet have a care-team/access-grant model. Railway backups/PITR remain a separate
+paid-plan limitation. No new dependency or environment variable was introduced.
 
 ## Next
 
-Owner decision on Railway billing and backups. Do not begin another roadmap item
-without an explicit instruction.
+Feature 2 — Global Search Bar, only after the user explicitly replies `GO`.

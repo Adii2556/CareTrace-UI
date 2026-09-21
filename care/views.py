@@ -2,6 +2,7 @@ from pathlib import Path
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -12,7 +13,7 @@ from accounts.models import PatientProfile
 from ai_services.services import AIServiceUnavailable, explain_medical_record
 
 from .decorators import role_required
-from .forms import MedicalRecordForm
+from .forms import MedicalRecordForm, ReferralCreateForm
 from .models import AccessLog, MedicalRecord, Referral
 
 
@@ -39,6 +40,29 @@ def _patient_referral(user, referral_id):
         id=referral_id,
         patient=user,
     )
+
+
+def _clinician_can_prepare_referral(user, referral) -> bool:
+    return referral.created_by_id == user.id or (
+        referral.created_by_id is None and referral.clinician_id == user.id
+    )
+
+
+def _visible_referral(user, referral_id):
+    profile = getattr(user, "profile", None)
+    if not profile:
+        raise PermissionDenied
+    referrals = Referral.objects.select_related(
+        "patient__profile", "clinician__profile", "created_by__profile"
+    ).prefetch_related("selected_records")
+    if profile.role == PatientProfile.Role.PATIENT:
+        return get_object_or_404(referrals, id=referral_id, patient=user)
+    if profile.role == PatientProfile.Role.CLINICIAN:
+        return get_object_or_404(
+            referrals.filter(Q(created_by=user) | Q(clinician=user)).distinct(),
+            id=referral_id,
+        )
+    raise PermissionDenied
 
 
 @role_required(PatientProfile.Role.PATIENT)
@@ -203,12 +227,105 @@ def explain_record(request, record_id):
     )
 
 
+@login_required
+def referral_list(request):
+    profile = getattr(request.user, "profile", None)
+    if not profile:
+        raise PermissionDenied
+    referrals = Referral.objects.select_related("patient__profile", "clinician__profile")
+    if profile.role == PatientProfile.Role.PATIENT:
+        referrals = referrals.filter(patient=request.user)
+    elif profile.role == PatientProfile.Role.CLINICIAN:
+        referrals = referrals.filter(
+            Q(created_by=request.user) | Q(clinician=request.user)
+        ).distinct()
+    else:
+        raise PermissionDenied
+    return render(
+        request,
+        "care/referral_list.html",
+        {"active_nav": "referrals", "referrals": referrals},
+    )
+
+
+@role_required(PatientProfile.Role.CLINICIAN)
+def create_referral(request):
+    form = ReferralCreateForm(request.POST or None, creator=request.user)
+    profile = request.user.profile
+    if request.method == "POST" and form.is_valid():
+        if not profile.organization:
+            form.add_error(None, "Add your organization before creating a referral.")
+        else:
+            referral = form.save(commit=False)
+            destination = referral.clinician
+            referral.created_by = request.user
+            referral.requested_by = request.user.get_full_name() or request.user.username
+            referral.referring_provider = profile.organization
+            referral.receiving_clinician = destination.get_full_name() or destination.username
+            referral.receiving_provider = destination.profile.organization
+            referral.status = Referral.Status.PENDING
+            referral.save()
+            messages.success(
+                request,
+                "Referral created. Select the records needed for patient consent.",
+            )
+            return redirect("care:select_records", referral_id=referral.id)
+    return render(
+        request,
+        "care/referral_create.html",
+        {
+            "active_nav": "referrals",
+            "form": form,
+            "has_available_patients": form.fields["patient"].queryset.exists(),
+        },
+    )
+
+
+@login_required
+def referral_detail(request, referral_id):
+    referral = _visible_referral(request.user, referral_id)
+    profile = request.user.profile
+    is_patient = profile.role == PatientProfile.Role.PATIENT
+    can_prepare = profile.role == PatientProfile.Role.CLINICIAN and (
+        _clinician_can_prepare_referral(request.user, referral)
+    )
+    is_authorized_destination = (
+        profile.role == PatientProfile.Role.CLINICIAN
+        and referral.clinician_id == request.user.id
+        and referral.status not in {Referral.Status.PENDING, Referral.Status.REJECTED}
+    )
+    can_view_clinical_context = is_patient or can_prepare or is_authorized_destination
+    medications = (
+        referral.patient.medications.filter(active=True)
+        if can_view_clinical_context
+        else referral.patient.medications.none()
+    )
+    return render(
+        request,
+        "care/referral_detail.html",
+        {
+            "active_nav": "referrals",
+            "referral": referral,
+            "can_prepare": can_prepare,
+            "can_view_clinical_context": can_view_clinical_context,
+            "is_patient": is_patient,
+            "is_authorized_destination": is_authorized_destination,
+            "medications": medications,
+        },
+    )
+
+
 @role_required(PatientProfile.Role.CLINICIAN)
 def select_records(request, referral_id):
-    referral = get_object_or_404(Referral, id=referral_id, clinician=request.user)
+    referral = get_object_or_404(
+        Referral.objects.filter(
+            Q(created_by=request.user) | Q(created_by__isnull=True, clinician=request.user)
+        ).distinct(),
+        id=referral_id,
+    )
     if referral.status != Referral.Status.PENDING:
         messages.info(request, "This referral package is locked after patient review.")
-        return redirect("care:doctor_workspace", referral_id=referral.id)
+        return redirect("care:referral_detail", referral_id=referral.id)
     available_records = referral.patient.medical_records.filter(
         status=MedicalRecord.Status.AVAILABLE
     )
@@ -220,7 +337,7 @@ def select_records(request, referral_id):
         else:
             referral.selected_records.set(selected)
             messages.success(request, "Referral package updated.")
-            return redirect("care:select_records", referral_id=referral.id)
+            return redirect("care:referral_detail", referral_id=referral.id)
     return render(
         request,
         "care/select_records.html",

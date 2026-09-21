@@ -1,13 +1,13 @@
 # Current development step
 
-Step: Railway deployment and live verification
+Step: Feature 1 — Create Referral
 Status: COMPLETE
 
 ## Objective
 
-Deploy the verified CareTrace Django application to Railway with production settings,
-persistent SQLite/media storage, a public HTTPS domain and fictional demo accounts;
-then verify the live patient and clinician entry flows.
+Add a permission-aware product workflow for an authorized clinician to create a
+referral, select relevant patient records, and review referral list/detail pages while
+preserving the existing patient-consent and destination-clinician access boundaries.
 
 ## Existing verified scope
 
@@ -18,17 +18,18 @@ then verify the live patient and clinician entry flows.
 - Railway-compatible Gunicorn/WhiteNoise configuration and CI.
 - Migrations, fictional demo seed, README and automated/browser verification.
 
-## Deployment boundary
+## Feature boundary
 
-The deployment remains a fictional-data demonstration and makes no regulatory-compliance
-claim. Do not add family profiles, third-party healthcare exchange or public emergency
-access. Stop if Railway requires a paid-plan purchase or if persistent storage cannot be
-configured safely.
+Implement only Create Referral. Do not begin Global Search, language switching,
+AI4Bharat or any later incremental feature. Do not expose an unrestricted patient
+directory or allow a receiving clinician to view selected medical records before
+patient consent. Stop after verified completion and wait for explicit `GO`.
 
 ## Result
 
-The fictional-data demo is live at
-`https://web-production-09eb0.up.railway.app/` with a persistent Railway volume,
-production environment settings, automatic GitHub deployments and verified patient
-and clinician login flows. Railway-managed backups/PITR require a Pro plan and were
-not enabled or purchased.
+Completed and verified on 2026-09-21. Clinicians can create referrals for connected
+patients, select patient-owned records, and use permission-scoped referral history and
+detail pages. The patient and referring clinician can review the prepared context;
+the destination clinician receives clinical context only after patient consent.
+
+Next approval gate: Feature 2 — Global Search Bar. Do not start without explicit `GO`.

@@ -161,8 +161,15 @@ class Command(BaseCommand):
             reference_id="CT-RF-1042",
             defaults={
                 "patient": patient,
+                "created_by": clinician,
                 "clinician": clinician,
                 "reason": "Cardiology Evaluation",
+                "specialty": "Cardiology",
+                "clinical_summary": (
+                    "Hypertension follow-up with an ECG completed for specialist review."
+                ),
+                "diagnosis": "Hypertension",
+                "notes": "Review the selected longitudinal records before the appointment.",
                 "requested_by": "Dr. Meera Rao",
                 "referring_provider": "Shantipur Primary Health Centre",
                 "receiving_provider": "Sanjeevani District Hospital",
