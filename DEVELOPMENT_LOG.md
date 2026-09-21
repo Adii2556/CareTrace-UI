@@ -303,3 +303,59 @@ any later feature.
 - The GitHub update is complete, but Railway had not advanced to the new commit by the
   final smoke check. No Railway CLI is configured in this workspace; the linked service
   may need a manual deploy/restart if it does not update automatically.
+
+## Feature 2 Follow-up — Search Shortcut Badge
+
+### Objective
+
+Make the `/` keyboard-shortcut badge readable in the global search bar on desktop and
+mobile without changing search behavior.
+
+### Changes
+
+- Added explicit CareTrace foreground, background, border, sizing and alignment styles
+  for the search `kbd` element.
+- Overrode Bootstrap's white key text and the static reference stylesheet's mobile rule
+  that hid the shortcut badge at widths up to 480 pixels.
+
+### Files Modified
+
+- `static/css/app.css`
+- `docs/agent/CURRENT_STEP.md`
+- `docs/agent/HANDOFF.md`
+- `DEVELOPMENT_LOG.md`
+
+### Database Changes
+
+None.
+
+### Tests Performed
+
+- `python manage.py check`: passed.
+- `python manage.py makemigrations --check --dry-run`: no changes detected.
+- `python -m ruff check .`: passed.
+- `python -m ruff format --check .`: all 54 Python files formatted.
+- `python manage.py test`: all 32 tests passed.
+- Browser QA at 1440 x 900 and 390 x 844: the `/` badge was visible and readable,
+  pressing `/` focused `#global-search`, no horizontal overflow occurred and browser
+  console warnings/errors were empty.
+
+### Bugs Found
+
+Bootstrap styled `kbd` text with a light foreground while the CareTrace reference style
+gave it a white background. The reference mobile rule also hid the badge at 480 pixels
+and below.
+
+### Fixes
+
+Defined the complete shortcut-badge presentation in the later-loading application
+stylesheet so third-party and preserved-reference rules cannot make it blank or hidden.
+
+### Result
+
+Working. The global-search slash shortcut is visually and functionally verified on
+desktop and mobile.
+
+### Known Limitations
+
+None specific to this visual fix.

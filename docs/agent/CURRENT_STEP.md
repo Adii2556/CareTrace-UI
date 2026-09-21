@@ -31,3 +31,7 @@ The shared top bar now submits to a grouped search page using permission-aware O
 queries. Patient, referral and medical-record matches are partial and case-insensitive;
 empty/no-result states, the existing `/` shortcut and responsive layouts are verified.
 No model, migration, dependency or environment-variable change was required.
+
+Follow-up: the `/` keyboard badge now has explicit CareTrace foreground/background
+styles and remains visible at the mobile breakpoint instead of inheriting Bootstrap's
+white key text and the static reference pack's mobile hiding rule.
