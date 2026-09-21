@@ -423,3 +423,13 @@ The fix was pushed as commit `e4e69f8`. Railway remained healthy, but its cache-
 public stylesheet did not contain the new patient-title or fixed-avatar rules by the
 final deployment check. A manual Railway deploy/restart may be needed if the linked
 service does not advance automatically.
+
+## Deployment Confirmation — 2026-09-21
+
+- Rechecked Railway after its automatic deployment window with a unique cache-busting
+  query and no-cache request headers.
+- `/health/` returned HTTP 200 and public `app.css` returned HTTP 200.
+- The deployed stylesheet contained the slash-badge sizing rule, `.top-user-name` and
+  the fixed `40px` avatar flex basis.
+- The Global Search and top-right patient identity follow-ups are deployed. The earlier
+  manual-restart warning is resolved.

@@ -57,10 +57,9 @@ tests were rerun successfully with `.venv`. No database, dependency, secret or
 environment-variable change was required.
 
 Railway is healthy (HTTP 200 at `/health/`) and now protects `/search/` with the expected
-login redirect. Its public `app.css` still predates the UI follow-ups at the final
-cache-bypassed check: neither the slash-badge rule nor the patient-identity rule was
-present. This workspace has no Railway CLI; the linked service may need a manual
-deploy/restart if it does not advance automatically.
+login redirect. A later cache-bypassed production check confirmed that public `app.css`
+contains the slash-badge, patient-name and fixed 40 x 40 avatar rules. The UI follow-ups
+are deployed; no manual Railway restart is currently required.
 
 ## Next
 
