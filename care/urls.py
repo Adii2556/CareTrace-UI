@@ -13,6 +13,7 @@ urlpatterns = [
     path("records/add/", views.add_record, name="add_record"),
     path("records/<int:record_id>/download/", views.download_record, name="download_record"),
     path("records/<int:record_id>/explain/", views.explain_record, name="explain_record"),
+    path("search/", views.global_search, name="global_search"),
     path("referrals/", views.referral_list, name="referral_list"),
     path("referrals/create/", views.create_referral, name="create_referral"),
     path("referrals/<int:referral_id>/", views.referral_detail, name="referral_detail"),

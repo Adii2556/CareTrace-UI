@@ -1,7 +1,11 @@
 {% load caretrace_ui %}
 <header class="topbar">
   <button class="mobile-menu-toggle" type="button" data-sidebar-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation">{% icon "LayoutDashboard" %}</button>
-  <div class="topbar-search" aria-hidden="true">{% icon "Search" %}<span>{% if profile.role == 'clinician' %}Search referrals or patients{% else %}Search your health information{% endif %}</span><kbd>/</kbd></div>
+  <form class="topbar-search" role="search" method="get" action="{% url 'care:global_search' %}">
+    <label class="visually-hidden" for="global-search">Search CareTrace</label>
+    {% icon "Search" %}<input id="global-search" type="search" name="q" value="{{ global_query|default:'' }}" maxlength="100" autocomplete="off" placeholder="{% if profile.role == 'clinician' %}Search referrals or patients{% else %}Search your health information{% endif %}"><kbd aria-hidden="true">/</kbd>
+    <button class="visually-hidden" type="submit">Search</button>
+  </form>
   <div class="row gap24 topbar-actions">
     <span class="small muted language-label">English</span>
     <button class="icon-button" type="button" aria-label="Notifications">{% icon "Bell" %}</button>
@@ -14,4 +18,3 @@
     </form>
   </div>
 </header>
-

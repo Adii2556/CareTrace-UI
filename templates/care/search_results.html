@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load caretrace_ui %}
+{% block title %}Search · CareTrace{% endblock %}
+{% block content %}
+<div class="page-head"><div><div class="eyebrow">Global search</div><h1>Search CareTrace</h1><p>{% if profile.role == 'clinician' %}Find authorized patients, referrals and referral records.{% else %}Find your referrals and medical records.{% endif %}</p></div>{% if global_query %}<span class="chip">{{ total_results }} result{{ total_results|pluralize }}</span>{% endif %}</div>
+
+{% if query_was_truncated %}<div class="notice amber mb24">{% icon "TriangleAlert" %}<div>Searches are limited to the first 100 characters.</div></div>{% endif %}
+
+{% if not global_query %}
+<section class="panel search-empty"><span class="iconbox">{% icon "Search" %}</span><h2>What are you looking for?</h2><p>Use the search field above. Partial names, CareTrace IDs, referral IDs, providers and record titles are supported.</p></section>
+{% elif not total_results %}
+<section class="panel search-empty"><span class="iconbox">{% icon "Search" %}</span><h2>No results found</h2><p>No information you are authorized to view matches “{{ global_query }}”. Try a patient name, referral ID, provider or record title.</p></section>
+{% else %}
+<div class="search-results-stack">
+  {% if patient_results %}
+  <section class="panel flush search-group">
+    <div class="panel-head"><h2>Patients</h2><span class="small muted">{{ patient_results|length }}</span></div>
+    {% for result in patient_results %}<article class="list-row"><span class="iconbox">{% icon "UserRound" %}</span><div class="grow"><strong>{{ result.patient.get_full_name|default:result.patient.username }}</strong><p>{{ result.patient.profile.caretrace_id }} · Authorized referral relationship</p></div><a class="btn tertiary compact" href="{% url 'care:referral_detail' result.referral.id %}">View referral</a></article>{% endfor %}
+  </section>
+  {% endif %}
+
+  {% if referral_results %}
+  <section class="panel flush search-group">
+    <div class="panel-head"><h2>Referrals</h2><span class="small muted">{{ referral_results|length }}</span></div>
+    {% for referral in referral_results %}<article class="list-row"><span class="iconbox">{% icon "Route" %}</span><div class="grow"><strong>{{ referral.reason }}</strong><p>{{ referral.reference_id }} · {{ referral.patient.get_full_name|default:referral.patient.username }} · {{ referral.receiving_provider }}</p></div><span class="chip {{ referral.status|status_class }}">{{ referral.get_status_display }}</span><a class="btn tertiary compact" href="{% url 'care:referral_detail' referral.id %}">View details</a></article>{% endfor %}
+  </section>
+  {% endif %}
+
+  {% if record_results %}
+  <section class="panel flush search-group">
+    <div class="panel-head"><h2>Medical records</h2><span class="small muted">{{ record_results|length }}</span></div>
+    {% for record in record_results %}<article class="list-row"><span class="iconbox category-{{ record.icon_name }}">{% icon record.icon_name %}</span><div class="grow"><strong>{{ record.title }}</strong><p>{{ record.provider }} · {{ record.recorded_on|date:"d M Y" }}</p></div>{% if profile.role == 'patient' %}<a class="btn tertiary compact" href="{% url 'care:records' %}?q={{ record.title|urlencode }}">View record</a>{% else %}<a class="btn tertiary compact" href="{% url 'care:referral_detail' record.search_referral_id %}">View referral</a>{% endif %}</article>{% endfor %}
+  </section>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

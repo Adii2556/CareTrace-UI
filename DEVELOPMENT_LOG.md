@@ -204,3 +204,95 @@ feature.
 - The focused reproduction failed before the fix with an HTTP 302 success redirect and
   passed after the fix with server-side validation rejection. The full suite now passes
   26 tests; Django checks, migration drift, Ruff and dependency checks also pass.
+
+## Feature
+
+Global Search Bar
+
+## Objective
+
+Turn the shared top-bar search placeholder into a useful, permission-aware search for
+existing CareTrace patients, referrals and medical records without weakening ownership
+or patient-consent boundaries.
+
+## Changes
+
+- Added a real GET search form to the shared top bar while preserving the existing `/`
+  keyboard shortcut.
+- Added a grouped server-rendered results page with patient, referral and medical-record
+  sections, plus clear initial and no-result states.
+- Added case-insensitive partial matching for useful existing identifiers and fields:
+  names, CareTrace IDs, referral IDs, specialties, providers, clinicians, record titles,
+  categories and summaries.
+- Reused referral visibility rules for patients and clinicians. Patient results are
+  derived only from visible referrals; a destination clinician cannot search selected
+  record metadata until the patient has consented.
+- Limited input to 100 characters and each result group to 20 rows.
+- Added responsive search/results styling that keeps the search field available on
+  mobile without horizontal overflow.
+
+## Files Modified
+
+- `care/tests.py`
+- `care/urls.py`
+- `care/views.py`
+- `templates/care/search_results.html`
+- `templates/components/topbar.html`
+- `static/css/app.css`
+- `README.md`
+- `docs/ARCHITECTURE.md`
+- `docs/agent/CURRENT_STEP.md`
+- `docs/agent/DECISIONS.md`
+- `docs/agent/HANDOFF.md`
+- `docs/agent/ROADMAP.md`
+- `DEVELOPMENT_LOG.md`
+
+## Database Changes
+
+None. The feature uses existing Django ORM relationships and fields; no migration is
+required.
+
+## Tests Performed
+
+- Six focused global-search tests: passed.
+- `python manage.py test`: all 32 tests passed.
+- `python manage.py check`: passed with no issues.
+- `python manage.py makemigrations --check --dry-run`: no changes detected.
+- `python -m ruff check .`: passed.
+- `python -m ruff format --check .`: all 54 Python files formatted.
+- `python -m pip check`: no broken requirements.
+- `python manage.py collectstatic --noinput`: passed; one changed static file collected.
+- `python manage.py check --deploy` with production-style values: only the two
+  intentionally deferred HSTS subdomain/preload warnings.
+- Browser QA with isolated fictional data at 1440 x 900 and 390 x 844: patient and
+  clinician queries, grouped results, authorized detail links, empty/no-result states,
+  `/` focus shortcut and responsive layout passed; no console warnings/errors or
+  horizontal overflow.
+
+## Bugs Found
+
+- The initial focused-test command used the system Python, which did not have Django or
+  Ruff installed.
+- Ruff's format check found three mechanical line-wrapping differences after the first
+  implementation pass.
+
+## Fixes
+
+- Re-ran all project commands with `.venv\Scripts\python.exe` and recorded the verified
+  results.
+- Applied Ruff formatting and re-ran lint, format and the complete test suite.
+
+## Result
+
+Working. Feature 2 is implemented and verified without beginning Language Switching or
+any later feature.
+
+## Known Limitations
+
+- Search is submitted with Enter to a complete results page; there is no live dropdown
+  or autocomplete API.
+- Results are capped at 20 per group and are not paginated, which is appropriate for the
+  current hackathon dataset.
+- CareTrace has no separate provider or hospital model, so those names are matched
+  through the existing referral and medical-record fields and link to their parent
+  object.

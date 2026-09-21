@@ -32,6 +32,10 @@ from the authenticated profiles rather than trusted from submitted text.
 The patient and referring clinician can review the prepared referral. A destination
 clinician can see referral routing metadata, but clinical context and selected records
 require recorded patient consent. The referral package is locked after patient review.
+Global search is server-rendered through the Django ORM and follows those same scopes:
+patients see only their own referrals and records; clinicians see only referral-linked
+patients and referrals; a destination clinician sees selected record metadata only
+after consent. Search results are capped per group and do not create a separate index.
 Downloads are served by an authorized Django view, not exposed as public media URLs.
 Uploads validate extension, content type, size and ownership. Logout and all state
 changes use POST with CSRF.

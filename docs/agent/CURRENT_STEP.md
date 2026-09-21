@@ -1,35 +1,33 @@
 # Current development step
 
-Step: Feature 1 — Create Referral
+Step: Feature 2 — Global Search Bar
 Status: COMPLETE
 
 ## Objective
 
-Add a permission-aware product workflow for an authorized clinician to create a
-referral, select relevant patient records, and review referral list/detail pages while
-preserving the existing patient-consent and destination-clinician access boundaries.
+Replace the decorative top-bar search placeholder with a real permission-aware Django
+ORM search for existing CareTrace patients, referrals and medical records. Results must
+be grouped, useful on empty/no-match states, linked to authorized product pages and
+responsive without exposing data outside the signed-in user's existing access.
 
 ## Existing verified scope
 
-- Shared responsive shell and supplied CareTrace visual system.
-- Patient dashboard, timeline, records, filtering, upload, explainer, emergency and privacy views.
-- Referral selection, explicit consent, tracking and clinician workspace.
-- Patient ownership, clinician assignment, consent checks and locked referral packages.
-- Railway-compatible Gunicorn/WhiteNoise configuration and CI.
-- Migrations, fictional demo seed, README and automated/browser verification.
+- Feature 1 Create Referral is complete, deployed and security-reviewed.
+- Patient record ownership, referral creator/destination separation and explicit
+  consent boundaries are enforced server-side.
+- The shared top bar currently contains a decorative search placeholder and the `/`
+  keyboard shortcut already focuses a real search input when one exists.
 
 ## Feature boundary
 
-Implement only Create Referral. Do not begin Global Search, language switching,
-AI4Bharat or any later incremental feature. Do not expose an unrestricted patient
-directory or allow a receiving clinician to view selected medical records before
-patient consent. Stop after verified completion and wait for explicit `GO`.
+Implement only Global Search Bar. Use simple Django ORM queries and existing entities.
+Do not add a search service, autocomplete API, language switching, AI4Bharat, referral
+filters or later roadmap features. Stop after verified completion and wait for explicit
+`GO`.
 
 ## Result
 
-Completed and verified on 2026-09-21. Clinicians can create referrals for connected
-patients, select patient-owned records, and use permission-scoped referral history and
-detail pages. The patient and referring clinician can review the prepared context;
-the destination clinician receives clinical context only after patient consent.
-
-Next approval gate: Feature 2 — Global Search Bar. Do not start without explicit `GO`.
+The shared top bar now submits to a grouped search page using permission-aware ORM
+queries. Patient, referral and medical-record matches are partial and case-insensitive;
+empty/no-result states, the existing `/` shortcut and responsive layouts are verified.
+No model, migration, dependency or environment-variable change was required.

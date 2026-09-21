@@ -40,6 +40,7 @@ The project reads configuration from environment variables. Django does not pars
 - Clinician referral creation for already-connected patients with validated destination,
   clinical context and priority
 - Permission-scoped referral history and detail pages for patients and clinicians
+- Global partial-match search for authorized patients, referrals and medical records
 - Referral package selection with patient-owned records only
 - Explicit, unchecked-by-default consent or rejection
 - Clinician referral workspace gated by consent and permitted record IDs
@@ -56,6 +57,8 @@ The project reads configuration from environment variables. Django does not pars
   access or access to the patient's complete record set.
 - Destination clinicians receive clinical context and the selected referral package
   only after the patient explicitly approves sharing.
+- Global search reuses these same ownership and consent-aware query boundaries; it is
+  not a directory of all patients or records.
 - State-changing forms use Django CSRF protection, templates keep automatic escaping,
   and medical downloads are served through ownership-aware views.
 

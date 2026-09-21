@@ -8,8 +8,8 @@
 | Longitudinal medical timeline | COMPLETE |
 | Referral selection, consent, tracking and clinician workspace | COMPLETE |
 | Create Referral product workflow, history and detail | COMPLETE |
-| Global Search Bar | PLANNED; requires explicit `GO` |
-| Language Switcher | PLANNED; requires completion and approval of Feature 2 |
+| Global Search Bar | COMPLETE |
+| Language Switcher | PLANNED; requires explicit `GO` after Feature 2 |
 | AI4Bharat integration | PLANNED; requires completion and approval of Feature 3 |
 | Privacy/access history and emergency account view | COMPLETE |
 | NVIDIA/Nemotron service boundary and safe fallback | COMPLETE |

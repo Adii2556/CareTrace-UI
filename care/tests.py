@@ -230,6 +230,96 @@ class CareTraceTestCase(TestCase):
         self.assertContains(clinician_response, self.referral.reference_id)
         self.assertNotContains(clinician_response, unrelated.reference_id)
 
+    def test_global_search_requires_login(self):
+        url = reverse("care:global_search")
+        self.assertRedirects(
+            self.client.get(url),
+            f"{reverse('accounts:login')}?next={url}",
+        )
+
+    def test_patient_search_is_case_insensitive_and_scoped_to_owner(self):
+        MedicalRecord.objects.create(
+            patient=self.other_patient,
+            title="Private Neurology Scan",
+            category=MedicalRecord.Category.IMAGING,
+            provider="Other provider",
+            recorded_on=date(2026, 8, 1),
+        )
+        self.client.login(username="patient", password="StrongPass!42")
+
+        own_response = self.client.get(reverse("care:global_search"), {"q": "cBc"})
+        self.assertContains(own_response, self.record.title)
+        self.assertNotContains(own_response, "Private Neurology Scan")
+
+        private_response = self.client.get(reverse("care:global_search"), {"q": "Neurology"})
+        self.assertContains(private_response, "No results found")
+        self.assertNotContains(private_response, "Private Neurology Scan")
+
+    def test_patient_search_finds_own_referral_by_partial_identifier(self):
+        self.client.login(username="patient", password="StrongPass!42")
+        response = self.client.get(reverse("care:global_search"), {"q": "rf-test"})
+        self.assertContains(response, self.referral.reference_id)
+        self.assertContains(response, "Referrals")
+
+    def test_clinician_search_groups_only_visible_patient_and_referral(self):
+        unrelated = Referral.objects.create(
+            patient=self.other_patient,
+            created_by=self.destination_clinician,
+            clinician=self.destination_clinician,
+            reason="Private Neurology Transfer",
+            requested_by="Nila Krishnan",
+            referring_provider="Coastal Heart Institute",
+            receiving_provider="Remote Neurology Centre",
+            receiving_clinician="Private Specialist",
+        )
+        self.client.login(username="clinician", password="StrongPass!42")
+
+        response = self.client.get(reverse("care:global_search"), {"q": "AnAnYa ShArMa"})
+        self.assertContains(response, "Patients")
+        self.assertContains(response, "Referrals")
+        self.assertContains(response, self.patient.get_full_name())
+
+        private_response = self.client.get(reverse("care:global_search"), {"q": "Remote Neurology"})
+        self.assertContains(private_response, "No results found")
+        self.assertNotContains(private_response, unrelated.reference_id)
+
+    def test_destination_search_hides_records_until_patient_consent(self):
+        referral = Referral.objects.create(
+            patient=self.patient,
+            created_by=self.clinician,
+            clinician=self.destination_clinician,
+            reason="Pending cardiac review",
+            requested_by="Arjun Mehta",
+            referring_provider="Sanjeevani District Hospital",
+            receiving_provider="Coastal Heart Institute",
+            receiving_clinician="Nila Krishnan",
+        )
+        referral.selected_records.add(self.record)
+        self.client.login(username="destination", password="StrongPass!42")
+        url = reverse("care:global_search")
+
+        pending_response = self.client.get(url, {"q": "CBC"})
+        self.assertContains(pending_response, "No results found")
+        self.assertNotContains(pending_response, self.record.title)
+
+        referral.status = Referral.Status.SHARED
+        referral.consented_at = timezone.now()
+        referral.save(update_fields=["status", "consented_at"])
+        consented_response = self.client.get(url, {"q": "CBC"})
+        self.assertContains(consented_response, "Medical records")
+        self.assertContains(consented_response, self.record.title)
+
+    def test_global_search_has_empty_and_length_limited_states(self):
+        self.client.login(username="patient", password="StrongPass!42")
+        url = reverse("care:global_search")
+
+        empty_response = self.client.get(url)
+        self.assertContains(empty_response, "What are you looking for?")
+
+        long_response = self.client.get(url, {"q": "x" * 101})
+        self.assertContains(long_response, "limited to the first 100 characters")
+        self.assertEqual(long_response.context["global_query"], "x" * 100)
+
     def test_destination_context_is_hidden_until_patient_consent(self):
         referral = Referral.objects.create(
             patient=self.patient,

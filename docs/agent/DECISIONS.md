@@ -13,3 +13,4 @@
 | 2026-09-20 | Preserve the static design pack alongside the dynamic product | Retain the visual source of truth and prior repository work | Accepted |
 | 2026-09-21 | Separate the referral creator from the destination clinician and derive provider snapshots from authenticated profiles | Preserve who initiated a transfer without trusting submitted identity fields | Accepted |
 | 2026-09-21 | Limit referral creation to patients previously referred by the signed-in clinician | Avoid exposing an unrestricted patient directory or letting destination assignment bootstrap referring-clinician access | Accepted |
+| 2026-09-21 | Implement global search as a server-rendered, capped Django ORM results page using existing access scopes | Keep the prototype simple and prevent a search index or autocomplete endpoint from widening medical-data access | Accepted |

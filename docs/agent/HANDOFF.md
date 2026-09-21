@@ -2,53 +2,46 @@
 
 ## Step
 
-Feature 1 — Create Referral.
+Feature 2 — Global Search Bar.
 
 ## Status
 
-COMPLETE — implemented, verified and deployed on 2026-09-21.
+COMPLETE — implemented and verified on 2026-09-21.
 
 ## Completed
 
-Added a permission-aware referral creation form, list and detail experience. Referring
-provider identity is derived from the authenticated clinician, the patient choice is
-limited to an existing clinical relationship, selected records remain patient-owned,
-and destination clinical context remains consent-gated.
+Replaced the decorative top-bar placeholder with a real GET search form and added a
+grouped results page for existing patients, referrals and medical records. Matching is
+case-insensitive and partial. Results follow existing patient ownership, referral
+relationship and consent rules; no global patient or record directory was introduced.
 
 ## Files
 
-Referral model/migration, form, views, URLs, tests, seed/admin integration, three care
-templates, shared referral navigation/style, README, architecture/decision/roadmap docs
-and `DEVELOPMENT_LOG.md`.
+Search view/URL/tests, shared top bar, search-results template, responsive styles,
+README, architecture/decision/roadmap/current-step docs and `DEVELOPMENT_LOG.md`.
 
 ## Decisions
 
-Store referring clinician separately from destination clinician. Restrict patient
-choices to existing referral relationships until a dedicated access-grant model exists.
-Keep the established pending/shared/received/closed/rejected status convention.
+Use one server-rendered Django ORM results page with a 100-character query limit and
+20-result cap per group. Search only existing entities and provider snapshot fields;
+do not add autocomplete, an API or a separate search service.
 
 ## Verification
 
 - Django check and migration drift check: passed.
-- Full/focused Django suite: 26 tests passed.
+- Six focused search tests and the full 32-test suite: passed.
 - Ruff lint/format and pip dependency checks: passed.
-- Fresh isolated migration and fictional seed: passed.
 - Static collection: passed.
 - Production-style deploy check: only deliberate HSTS subdomain/preload notices.
-- Desktop and 390px browser flows: passed with no console errors or overflow.
-- GitHub commit `465cd80` pushed to `origin/main`; Railway health returned 200 and the
-  new authenticated create route returned the expected login redirect after restart.
+- Patient and clinician browser flows at 1440 x 900 and 390 x 844: passed with no
+  horizontal overflow or browser console warnings/errors.
 
 ## Issues
 
-The first patient-clinician connection still requires administration because CareTrace
-does not yet have a care-team/access-grant model. Railway backups/PITR remain a separate
-paid-plan limitation. No new dependency or environment variable was introduced.
-
-A focused security follow-up found and closed a destination-clinician authorization
-bootstrap: destination assignment no longer makes a patient eligible for new referral
-creation. Only prior referral creators receive that capability.
+The first test invocation used the system Python without project dependencies; all
+tests were rerun successfully with `.venv`. No database, dependency, secret or
+environment-variable change was required.
 
 ## Next
 
-Feature 2 — Global Search Bar, only after the user explicitly replies `GO`.
+Feature 3 — Language Switcher, only after the user explicitly replies `GO`.

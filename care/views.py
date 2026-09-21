@@ -3,7 +3,7 @@ from pathlib import Path
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -15,6 +15,8 @@ from ai_services.services import AIServiceUnavailable, explain_medical_record
 from .decorators import role_required
 from .forms import MedicalRecordForm, ReferralCreateForm
 from .models import AccessLog, MedicalRecord, Referral
+
+SEARCH_RESULT_LIMIT = 20
 
 
 def healthcheck(request):
@@ -63,6 +65,54 @@ def _visible_referral(user, referral_id):
             id=referral_id,
         )
     raise PermissionDenied
+
+
+def _visible_referrals_for(user):
+    profile = getattr(user, "profile", None)
+    if not profile:
+        raise PermissionDenied
+    referrals = Referral.objects.select_related(
+        "patient__profile", "clinician__profile", "created_by__profile"
+    )
+    if profile.role == PatientProfile.Role.PATIENT:
+        return referrals.filter(patient=user)
+    if profile.role == PatientProfile.Role.CLINICIAN:
+        return referrals.filter(Q(created_by=user) | Q(clinician=user)).distinct()
+    raise PermissionDenied
+
+
+def _record_search_query(query):
+    return (
+        Q(title__icontains=query)
+        | Q(summary__icontains=query)
+        | Q(provider__icontains=query)
+        | Q(category__icontains=query)
+    )
+
+
+def _patient_identity_search_query(query, prefix=""):
+    identity_query = Q()
+    for term in query.split():
+        identity_query &= (
+            Q(**{f"{prefix}username__icontains": term})
+            | Q(**{f"{prefix}first_name__icontains": term})
+            | Q(**{f"{prefix}last_name__icontains": term})
+            | Q(**{f"{prefix}profile__caretrace_id__icontains": term})
+        )
+    return identity_query
+
+
+def _referral_search_query(query):
+    return (
+        Q(reference_id__icontains=query)
+        | Q(reason__icontains=query)
+        | Q(specialty__icontains=query)
+        | Q(requested_by__icontains=query)
+        | Q(referring_provider__icontains=query)
+        | Q(receiving_provider__icontains=query)
+        | Q(receiving_clinician__icontains=query)
+        | _patient_identity_search_query(query, prefix="patient__")
+    )
 
 
 @role_required(PatientProfile.Role.PATIENT)
@@ -228,19 +278,89 @@ def explain_record(request, record_id):
 
 
 @login_required
-def referral_list(request):
+def global_search(request):
+    raw_query = request.GET.get("q", "").strip()
+    query = raw_query[:100]
     profile = getattr(request.user, "profile", None)
     if not profile:
         raise PermissionDenied
-    referrals = Referral.objects.select_related("patient__profile", "clinician__profile")
-    if profile.role == PatientProfile.Role.PATIENT:
-        referrals = referrals.filter(patient=request.user)
-    elif profile.role == PatientProfile.Role.CLINICIAN:
-        referrals = referrals.filter(
-            Q(created_by=request.user) | Q(clinician=request.user)
-        ).distinct()
-    else:
-        raise PermissionDenied
+
+    patient_results = []
+    referral_results = []
+    record_results = []
+    if query:
+        visible_referrals = _visible_referrals_for(request.user)
+        referral_results = list(
+            visible_referrals.filter(_referral_search_query(query))[:SEARCH_RESULT_LIMIT]
+        )
+
+        if profile.role == PatientProfile.Role.PATIENT:
+            record_results = list(
+                request.user.medical_records.filter(_record_search_query(query))[
+                    :SEARCH_RESULT_LIMIT
+                ]
+            )
+        else:
+            matching_patient_referrals = visible_referrals.filter(
+                _patient_identity_search_query(query, prefix="patient__")
+            )
+            seen_patient_ids = set()
+            for referral in matching_patient_referrals:
+                if referral.patient_id in seen_patient_ids:
+                    continue
+                patient_results.append({"patient": referral.patient, "referral": referral})
+                seen_patient_ids.add(referral.patient_id)
+                if len(patient_results) == SEARCH_RESULT_LIMIT:
+                    break
+
+            permitted_record_referrals = visible_referrals.filter(
+                Q(created_by=request.user)
+                | (
+                    Q(clinician=request.user)
+                    & ~Q(status__in=[Referral.Status.PENDING, Referral.Status.REJECTED])
+                )
+            )
+            permitted_referral_ids = list(permitted_record_referrals.values_list("id", flat=True))
+            permitted_referral_queryset = Referral.objects.filter(
+                id__in=permitted_referral_ids
+            ).order_by("-requested_at")
+            record_results = list(
+                MedicalRecord.objects.filter(
+                    referrals__id__in=permitted_referral_ids,
+                    status=MedicalRecord.Status.AVAILABLE,
+                )
+                .filter(_record_search_query(query))
+                .prefetch_related(
+                    Prefetch(
+                        "referrals",
+                        queryset=permitted_referral_queryset,
+                        to_attr="search_referrals",
+                    )
+                )
+                .distinct()[:SEARCH_RESULT_LIMIT]
+            )
+            for record in record_results:
+                record.search_referral_id = record.search_referrals[0].id
+
+    total_results = len(patient_results) + len(referral_results) + len(record_results)
+    return render(
+        request,
+        "care/search_results.html",
+        {
+            "active_nav": "search",
+            "global_query": query,
+            "patient_results": patient_results,
+            "referral_results": referral_results,
+            "record_results": record_results,
+            "total_results": total_results,
+            "query_was_truncated": len(raw_query) > len(query),
+        },
+    )
+
+
+@login_required
+def referral_list(request):
+    referrals = _visible_referrals_for(request.user)
     return render(
         request,
         "care/referral_list.html",
