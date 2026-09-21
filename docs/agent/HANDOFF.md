@@ -6,7 +6,7 @@ Feature 1 — Create Referral.
 
 ## Status
 
-COMPLETE — implemented and verified on 2026-09-21.
+COMPLETE — implemented, verified and deployed on 2026-09-21.
 
 ## Completed
 
@@ -36,6 +36,8 @@ Keep the established pending/shared/received/closed/rejected status convention.
 - Static collection: passed.
 - Production-style deploy check: only deliberate HSTS subdomain/preload notices.
 - Desktop and 390px browser flows: passed with no console errors or overflow.
+- GitHub commit `465cd80` pushed to `origin/main`; Railway health returned 200 and the
+  new authenticated create route returned the expected login redirect after restart.
 
 ## Issues
 

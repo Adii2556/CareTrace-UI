@@ -162,6 +162,9 @@ preparation remains authorized. No existing rows are deleted or reset.
 - Browser verification at desktop and 390 x 844: clinician list, invalid form, successful
   create, record selection, detail, patient list/detail and consent navigation passed;
   no horizontal overflow or browser console warnings/errors.
+- GitHub/Railway deployment smoke: commit `465cd80` reached `origin/main`; Railway
+  returned HTTP 200 for `/health/` and the new authenticated create route returned the
+  expected HTTP 302 login redirect after the deployment restart.
 
 ## Bugs Found
 
@@ -175,7 +178,7 @@ preparation remains authorized. No existing rows are deleted or reset.
 
 ## Result
 
-Working. Feature 1 is implemented and locally verified without starting any later
+Working. Feature 1 is implemented, verified and deployed without starting any later
 feature.
 
 ## Known Limitations
