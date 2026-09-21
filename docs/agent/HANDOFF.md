@@ -30,7 +30,7 @@ Keep the established pending/shared/received/closed/rejected status convention.
 ## Verification
 
 - Django check and migration drift check: passed.
-- Full/focused Django suite: 25 tests passed.
+- Full/focused Django suite: 26 tests passed.
 - Ruff lint/format and pip dependency checks: passed.
 - Fresh isolated migration and fictional seed: passed.
 - Static collection: passed.
@@ -44,6 +44,10 @@ Keep the established pending/shared/received/closed/rejected status convention.
 The first patient-clinician connection still requires administration because CareTrace
 does not yet have a care-team/access-grant model. Railway backups/PITR remain a separate
 paid-plan limitation. No new dependency or environment variable was introduced.
+
+A focused security follow-up found and closed a destination-clinician authorization
+bootstrap: destination assignment no longer makes a patient eligible for new referral
+creation. Only prior referral creators receive that capability.
 
 ## Next
 

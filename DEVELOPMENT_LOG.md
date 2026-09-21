@@ -190,3 +190,17 @@ feature.
   separate draft state.
 - Referral event history/timeline remains Feature 6; this feature shows the current
   persisted status only.
+
+## Security follow-up — 2026-09-21
+
+- Reviewed the Feature 1 referral diff and its frontend/documentation boundaries.
+- Found that a destination clinician on a pending referral was included in the create
+  form's patient queryset. That clinician could create a second referral, become its
+  creator and reach the all-record selection view before patient consent.
+- Restricted referral creation to patients for whom the signed-in clinician previously
+  created a referral. Destination assignment no longer grants this capability.
+- Added a regression test for the destination-clinician bootstrap path and clarified
+  the create-form copy, README security boundaries, architecture and decision record.
+- The focused reproduction failed before the fix with an HTTP 302 success redirect and
+  passed after the fix with server-side validation rejection. The full suite now passes
+  26 tests; Django checks, migration drift, Ruff and dependency checks also pass.

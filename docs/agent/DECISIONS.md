@@ -12,4 +12,4 @@
 | 2026-09-20 | Keep NVIDIA/Nemotron calls in `ai_services` and degrade safely | Isolate credentials/failures and keep the app usable offline | Accepted |
 | 2026-09-20 | Preserve the static design pack alongside the dynamic product | Retain the visual source of truth and prior repository work | Accepted |
 | 2026-09-21 | Separate the referral creator from the destination clinician and derive provider snapshots from authenticated profiles | Preserve who initiated a transfer without trusting submitted identity fields | Accepted |
-| 2026-09-21 | Limit referral creation to patients with an existing referral relationship | Avoid exposing an unrestricted patient directory until a dedicated care-team/access-grant model is approved | Accepted |
+| 2026-09-21 | Limit referral creation to patients previously referred by the signed-in clinician | Avoid exposing an unrestricted patient directory or letting destination assignment bootstrap referring-clinician access | Accepted |

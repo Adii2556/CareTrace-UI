@@ -2,7 +2,6 @@ from pathlib import Path
 
 from django import forms
 from django.contrib.auth.models import User
-from django.db.models import Q
 
 from accounts.models import PatientProfile
 
@@ -29,7 +28,11 @@ class ClinicianChoiceField(forms.ModelChoiceField):
 
 
 class ReferralCreateForm(forms.ModelForm):
-    patient = PatientChoiceField(queryset=User.objects.none(), empty_label="Select patient")
+    patient = PatientChoiceField(
+        queryset=User.objects.none(),
+        empty_label="Select patient",
+        help_text="Only patients you have previously referred are listed.",
+    )
     clinician = ClinicianChoiceField(
         queryset=User.objects.none(),
         label="Destination clinician",
@@ -41,7 +44,7 @@ class ReferralCreateForm(forms.ModelForm):
         self.creator = creator
         self.fields["patient"].queryset = (
             User.objects.filter(profile__role=PatientProfile.Role.PATIENT)
-            .filter(Q(referrals__clinician=creator) | Q(referrals__created_by=creator))
+            .filter(referrals__created_by=creator)
             .distinct()
             .order_by("first_name", "last_name", "username")
         )
@@ -82,7 +85,6 @@ class ReferralCreateForm(forms.ModelForm):
             "notes": "Additional notes",
         }
         help_texts = {
-            "patient": "Only patients already connected to your clinical account are listed.",
             "clinical_summary": "Provide only the context needed for this referral.",
             "notes": "Optional operational notes for the referral.",
         }

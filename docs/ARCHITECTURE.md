@@ -24,9 +24,10 @@ Browser
 Patient pages require the patient role and always query through `request.user`.
 Referral creation records an authenticated referring clinician separately from the
 destination clinician. To avoid a global patient directory without inventing a new
-care-team model, the create form offers only patients already connected to the creator
-through a referral. Provider names and organizations are derived server-side from the
-authenticated profiles rather than trusted from submitted text.
+care-team model, the create form offers only patients for whom the signed-in clinician
+previously created a referral. Destination assignment alone never grants the stronger
+referring-clinician capability. Provider names and organizations are derived server-side
+from the authenticated profiles rather than trusted from submitted text.
 
 The patient and referring clinician can review the prepared referral. A destination
 clinician can see referral routing metadata, but clinical context and selected records

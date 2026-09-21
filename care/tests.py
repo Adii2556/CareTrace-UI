@@ -131,6 +131,7 @@ class CareTraceTestCase(TestCase):
             response.context["form"].fields["patient"].queryset.values_list("id", flat=True)
         )
         self.assertEqual(patient_ids, {self.patient.id})
+        self.assertContains(response, "Only patients you have previously referred are listed.")
 
     def test_clinician_can_create_referral_with_derived_provider_identity(self):
         self.client.login(username="clinician", password="StrongPass!42")
@@ -154,6 +155,26 @@ class CareTraceTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Select a valid choice")
         self.assertFalse(Referral.objects.filter(reason="Specialist cardiac review").exists())
+
+    def test_destination_cannot_bootstrap_referring_access_before_consent(self):
+        Referral.objects.create(
+            patient=self.patient,
+            created_by=self.clinician,
+            clinician=self.destination_clinician,
+            reason="Pending destination referral",
+            requested_by="Arjun Mehta",
+            referring_provider="Sanjeevani District Hospital",
+            receiving_provider="Coastal Heart Institute",
+            receiving_clinician="Nila Krishnan",
+        )
+        self.client.login(username="destination", password="StrongPass!42")
+        response = self.client.post(
+            reverse("care:create_referral"),
+            self.referral_form_data(clinician=self.clinician.id),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Select a valid choice")
+        self.assertFalse(Referral.objects.filter(created_by=self.destination_clinician).exists())
 
     def test_create_referral_requires_csrf_token(self):
         csrf_client = Client(enforce_csrf_checks=True)

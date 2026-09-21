@@ -5,7 +5,7 @@
 <div class="breadcrumb"><a href="{% url 'care:referral_list' %}">Referrals</a>{% icon "ChevronRight" %}Create referral</div>
 <div class="page-head"><div><h1>Create Referral</h1><p>Prepare a focused referral for patient review and consent.</p></div></div>
 {% if not has_available_patients %}
-<div class="notice amber mb24">{% icon "TriangleAlert" %}<div><strong>No connected patients are available.</strong><br>A clinician can create a referral only for a patient already connected through an assigned referral. Ask an administrator to establish the initial relationship.</div></div>
+<div class="notice amber mb24">{% icon "TriangleAlert" %}<div><strong>No previously referred patients are available.</strong><br>Only a clinician who previously created a referral for a patient can create another one. Ask an administrator to establish the initial relationship.</div></div>
 {% endif %}
 <form method="post" class="panel referral-form" novalidate>
   {% csrf_token %}

@@ -47,7 +47,19 @@ The project reads configuration from environment variables. Django does not pars
 - Privacy/access log and emergency summary
 - Plain-language record explanation with a safe unavailable/error state when NVIDIA is not configured
 
-Authorization is enforced in Django views and querysets. Hiding a link is never treated as an access-control boundary.
+## Security and privacy boundaries
+
+- Authorization is enforced in Django views, forms and querysets. Hiding a link is
+  never treated as an access-control boundary.
+- Referral creation lists only patients for whom the signed-in clinician previously
+  created a referral. Being named as a destination does not grant referring-clinician
+  access or access to the patient's complete record set.
+- Destination clinicians receive clinical context and the selected referral package
+  only after the patient explicitly approves sharing.
+- State-changing forms use Django CSRF protection, templates keep automatic escaping,
+  and medical downloads are served through ownership-aware views.
+
+CareTrace is a fictional-data prototype and does not claim regulatory compliance.
 
 ## Quality checks
 
