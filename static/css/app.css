@@ -121,6 +121,12 @@ a.nav-item:hover { color: var(--blue); background: #f3f8fb; }
 .login-form-panel { display: grid; place-items: center; padding: 32px; }
 .login-card { width: min(440px, 100%); background: #fff; padding: 42px; border-radius: 16px; border: 1px solid var(--line); box-shadow: 0 18px 55px rgba(23,50,74,.09); }
 .mobile-login-brand { display: none; margin-bottom: 28px; }
+.demo-login-panel { padding: 20px; border: 1px solid #b9dcd8; border-radius: 12px; background: #f2f9f8; }
+.demo-login-panel .form-select { min-height: 48px; border-color: var(--line); color: var(--ink); }
+.demo-login-panel .form-select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(19,135,126,.12); }
+.credential-login { border-top: 1px solid var(--line); padding-top: 20px; }
+.credential-login summary { color: var(--teal-dark); font-weight: 700; cursor: pointer; }
+.credential-login-body { padding-top: 2px; }
 
 @media (max-width: 1100px) {
   .screen-foot { margin-left: 200px; }

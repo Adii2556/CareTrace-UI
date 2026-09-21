@@ -24,9 +24,33 @@
     <section class="login-form-panel">
       <div class="login-card">
         <div class="mobile-login-brand brand"><span class="brandmark">{% icon "Route" %}</span>CareTrace</div>
-        <h2>Welcome back</h2>
-        <p class="muted mt8">Sign in to your CareTrace account.</p>
+        {% if demo_quick_login_enabled %}
+          <p class="eyebrow">Temporary judge access</p>
+          <h2>Choose a demo profile</h2>
+          <p class="muted mt8">Explore CareTrace using fictional healthcare information.</p>
+        {% else %}
+          <h2>Welcome back</h2>
+          <p class="muted mt8">Sign in to your CareTrace account.</p>
+        {% endif %}
+        {% for message in messages %}<div class="alert alert-danger mt24" role="alert">{{ message }}</div>{% endfor %}
         {% if form.errors %}<div class="alert alert-danger mt24" role="alert">Your username or password is incorrect.</div>{% endif %}
+        {% if demo_quick_login_enabled %}
+          <form method="post" action="{% url 'accounts:demo_login' %}" class="demo-login-panel mt24">
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+            <label class="form-label" for="demo-profile">Demo profile</label>
+            <select class="form-select" id="demo-profile" name="profile" required>
+              <option value="" selected disabled>Select a profile</option>
+              <option value="patient">Patient — Ananya Sharma</option>
+              <option value="clinician">Hospital / Clinician — Dr. Arjun Mehta</option>
+            </select>
+            <button class="btn primary full mt16" type="submit">Enter demo {% icon "ArrowRight" %}</button>
+            <p class="small muted mt16 mb-0">Demo mode uses synthetic records only. Do not enter real medical information.</p>
+          </form>
+          <details class="credential-login mt24"{% if form.errors %} open{% endif %}>
+            <summary>Use account credentials</summary>
+            <div class="credential-login-body">
+        {% endif %}
         <form method="post" class="mt24">
           {% csrf_token %}
           {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
@@ -34,6 +58,10 @@
           <div class="mb-4"><label class="form-label" for="{{ form.password.id_for_label }}">Password</label>{{ form.password }}</div>
           <button class="btn primary full" type="submit">Sign in {% icon "ArrowRight" %}</button>
         </form>
+        {% if demo_quick_login_enabled %}
+            </div>
+          </details>
+        {% endif %}
         <p class="small muted mt24">Fictional CareTrace prototype for SIH 2026. Do not enter real medical information.</p>
       </div>
     </section>

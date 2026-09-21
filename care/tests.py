@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -12,6 +13,16 @@ from django.utils import timezone
 from accounts.models import PatientProfile
 
 from .models import MedicalRecord, Referral
+
+
+class DemoSeedCommandTests(TestCase):
+    def test_unusable_password_mode_disables_demo_password_login(self):
+        call_command("seed_demo", unusable_password=True, verbosity=0)
+
+        patient = User.objects.get(username="ananya")
+        clinician = User.objects.get(username="arjun")
+        self.assertFalse(patient.has_usable_password())
+        self.assertFalse(clinician.has_usable_password())
 
 
 class CareTraceTestCase(TestCase):

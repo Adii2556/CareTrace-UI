@@ -32,6 +32,19 @@ Open `http://127.0.0.1:8000/accounts/login/` and sign in as either demo user:
 
 Both accounts use the password supplied to `seed_demo`. Demo records are fictional.
 
+### Temporary judge demo access
+
+For a time-limited judging environment, set `DJANGO_DEMO_QUICK_LOGIN=True` after
+running `python manage.py seed_demo --unusable-password`. The login page then offers only the fixed fictional `ananya`
+patient and `arjun` clinician profiles through a CSRF-protected POST action. Normal
+credential login remains available under **Use account credentials**.
+
+This mode intentionally lets any visitor enter those synthetic accounts. Never enable
+it for real patient information. Disable it immediately after judging by setting
+`DJANGO_DEMO_QUICK_LOGIN=False`; no code rollback or database change is required.
+The recommended deployment command gives the two demo accounts unusable passwords,
+so they cannot bypass the fixed quick-login flow through credential authentication.
+
 The project reads configuration from environment variables. Django does not parse `.env` automatically, so load those values through your shell or hosting provider. Never commit a production secret or NVIDIA API key.
 
 ## Key workflows
@@ -87,6 +100,7 @@ python manage.py check --deploy
 | --- | --- |
 | `DJANGO_SECRET_KEY` | Required when debug mode is disabled |
 | `DJANGO_DEBUG` | `True` locally; `False` in production |
+| `DJANGO_DEMO_QUICK_LOGIN` | Temporary fixed-profile judge access; defaults to `False` |
 | `DJANGO_ALLOWED_HOSTS` | Comma-separated hostnames |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | Comma-separated HTTPS origins |
 | `DJANGO_SECURE_SSL_REDIRECT` | Redirect HTTP to HTTPS; defaults on in production |
@@ -113,8 +127,9 @@ Django's HTTPS redirect because Railway probes it over the private HTTP network;
 all user-facing routes remain HTTPS-only.
 
 The fictional-data demonstration is deployed at
-[`https://web-production-09eb0.up.railway.app/`](https://web-production-09eb0.up.railway.app/).
-Demo credentials are supplied separately and are not stored in this repository.
+[`https://web-production-ef1db6.up.railway.app/`](https://web-production-ef1db6.up.railway.app/).
+Password credentials are not stored in this repository. Temporary judge access is
+controlled only by the environment flag described above.
 
 ## Project layout
 

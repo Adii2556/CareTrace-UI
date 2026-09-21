@@ -40,6 +40,14 @@ Downloads are served by an authorized Django view, not exposed as public media U
 Uploads validate extension, content type, size and ownership. Logout and all state
 changes use POST with CSRF.
 
+Temporary judge access is an explicit demo-only exception at the authentication entry
+point, not an authorization bypass. When `DJANGO_DEMO_QUICK_LOGIN` is enabled, a
+POST-only CSRF-protected endpoint maps two fixed selections to the synthetic `ananya`
+patient and `arjun` clinician accounts. It verifies that the account is active and has
+the expected role, rejects unsafe return URLs and starts a normal Django session. The
+feature is disabled by default and does not alter any downstream ownership, consent or
+download checks.
+
 The application does not claim regulatory compliance. All committed/demo clinical
 content is fictional.
 
@@ -53,3 +61,7 @@ exception so Railway can probe it internally without weakening user-facing route
 The deployed demonstration uses one replica, `/app/media/db.sqlite3` for SQLite and
 `/app/media` as its persistent volume mount. Railway-managed backups and point-in-time
 recovery are not enabled because they require a Pro plan.
+
+Judge quick access is enabled or reverted with one Railway environment variable. Demo
+accounts and fictional records are seeded once through the existing `seed_demo`
+management command rather than being silently recreated during every application start.

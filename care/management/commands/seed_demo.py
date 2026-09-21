@@ -12,20 +12,27 @@ class Command(BaseCommand):
     help = "Create or refresh the fictional CareTrace demonstration accounts and records."
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            "--password", required=True, help="Password assigned to both demo accounts."
+        password_group = parser.add_mutually_exclusive_group(required=True)
+        password_group.add_argument("--password", help="Password assigned to both demo accounts.")
+        password_group.add_argument(
+            "--unusable-password",
+            action="store_true",
+            help="Disable password authentication for both demo accounts.",
         )
 
     def handle(self, *args, **options):
         password = options["password"]
-        if len(password) < 10:
+        if password and len(password) < 10:
             raise CommandError("Use a demo password with at least 10 characters.")
 
         patient, _ = User.objects.update_or_create(
             username="ananya",
             defaults={"first_name": "Ananya", "last_name": "Sharma", "email": ""},
         )
-        patient.set_password(password)
+        if password:
+            patient.set_password(password)
+        else:
+            patient.set_unusable_password()
         patient.save()
         PatientProfile.objects.update_or_create(
             user=patient,
@@ -46,7 +53,10 @@ class Command(BaseCommand):
             username="arjun",
             defaults={"first_name": "Arjun", "last_name": "Mehta", "email": ""},
         )
-        clinician.set_password(password)
+        if password:
+            clinician.set_password(password)
+        else:
+            clinician.set_unusable_password()
         clinician.save()
         PatientProfile.objects.update_or_create(
             user=clinician,

@@ -1,41 +1,29 @@
 # Current development step
 
-Step: Feature 2 — Global Search Bar
+Step: Temporary Judge Demo Access
 Status: COMPLETE
 
 ## Objective
 
-Replace the decorative top-bar search placeholder with a real permission-aware Django
-ORM search for existing CareTrace patients, referrals and medical records. Results must
-be grouped, useful on empty/no-match states, linked to authorized product pages and
-responsive without exposing data outside the signed-in user's existing access.
-
-## Existing verified scope
-
-- Feature 1 Create Referral is complete, deployed and security-reviewed.
-- Patient record ownership, referral creator/destination separation and explicit
-  consent boundaries are enforced server-side.
-- The shared top bar currently contains a decorative search placeholder and the `/`
-  keyboard shortcut already focuses a real search input when one exists.
+Let hackathon judges enter one of two fixed fictional CareTrace profiles from the login
+page without receiving or typing credentials. Preserve Django sessions, CSRF protection,
+role checks and the normal credential form.
 
 ## Feature boundary
 
-Implement only Global Search Bar. Use simple Django ORM queries and existing entities.
-Do not add a search service, autocomplete API, language switching, AI4Bharat, referral
-filters or later roadmap features. Stop after verified completion and wait for explicit
-`GO`.
+- Gate the feature behind `DJANGO_DEMO_QUICK_LOGIN`, disabled by default.
+- Map only the fixed `ananya` patient and `arjun` clinician demo accounts.
+- Use a POST-only, CSRF-protected Django endpoint and reject missing, inactive or
+  role-mismatched accounts.
+- Keep all existing authorization and medical-data access rules unchanged.
+- Make rollback a single environment-variable change.
+- Do not begin Language Switcher or any later roadmap feature.
 
 ## Result
 
-The shared top bar now submits to a grouped search page using permission-aware ORM
-queries. Patient, referral and medical-record matches are partial and case-insensitive;
-empty/no-result states, the existing `/` shortcut and responsive layouts are verified.
-No model, migration, dependency or environment-variable change was required.
-
-Follow-up: the `/` keyboard badge now has explicit CareTrace foreground/background
-styles and remains visible at the mobile breakpoint instead of inheriting Bootstrap's
-white key text and the static reference pack's mobile hiding rule.
-
-Follow-up: the top-right account identity now uses dedicated name/role typography and
-a fixed 40 x 40 initials avatar, preventing Bootstrap row rules from shrinking the
-avatar or making the patient name wrap unpredictably.
+The login page now presents an environment-gated selector for the fixed fictional
+patient and clinician profiles. The endpoint is POST-only, CSRF-protected, validates
+account activity and role, rejects unsafe return URLs and creates a normal Django
+session. Password login remains available as a collapsed fallback. Desktop and mobile
+browser flows for both roles passed; disabling `DJANGO_DEMO_QUICK_LOGIN` hides the UI
+and returns 404 from the endpoint.

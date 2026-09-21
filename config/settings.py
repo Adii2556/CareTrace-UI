@@ -12,6 +12,7 @@ def env_bool(name: str, default: bool = False) -> bool:
 
 
 DEBUG = env_bool("DJANGO_DEBUG", True)
+DEMO_QUICK_LOGIN_ENABLED = env_bool("DJANGO_DEMO_QUICK_LOGIN", False)
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
     if not DEBUG:

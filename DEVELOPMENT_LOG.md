@@ -433,3 +433,81 @@ service does not advance automatically.
   the fixed `40px` avatar flex basis.
 - The Global Search and top-right patient identity follow-ups are deployed. The earlier
   manual-restart warning is resolved.
+
+## Temporary Judge Demo Access
+
+### Objective
+
+Give hackathon judges frictionless access to the two fixed fictional CareTrace roles
+without publishing or distributing passwords, while keeping the exception temporary
+and quick to revert.
+
+### Changes
+
+- Added the disabled-by-default `DJANGO_DEMO_QUICK_LOGIN` feature flag.
+- Added a POST-only, CSRF-protected endpoint for the fixed `ananya` patient and `arjun`
+  clinician accounts.
+- Validated account activity, expected role and safe return destinations before starting
+  a normal Django session.
+- Added a judge profile selector to the login page and retained password login in a
+  collapsed fallback.
+- Added an unusable-password seeding mode for deployment-only demo identities.
+- Documented the synthetic-data boundary and one-variable rollback procedure.
+
+### Files Modified
+
+- `.env.example`
+- `accounts/tests.py`
+- `accounts/urls.py`
+- `accounts/views.py`
+- `config/settings.py`
+- `care/management/commands/seed_demo.py`
+- `care/tests.py`
+- `static/css/app.css`
+- `templates/accounts/login.html`
+- `README.md`
+- `docs/ARCHITECTURE.md`
+- `docs/agent/CURRENT_STEP.md`
+- `docs/agent/DECISIONS.md`
+- `docs/agent/HANDOFF.md`
+- `docs/agent/ROADMAP.md`
+- `DEVELOPMENT_LOG.md`
+
+### Database Changes
+
+None. The existing `seed_demo` management command remains the one-time source of
+fictional accounts and records; its new `--unusable-password` option changes only
+authentication state, not the schema.
+
+### Tests Performed
+
+- Eight focused demo-login and secure-seeding tests: passed.
+- Full Django regression suite: passed.
+- Django system and migration-drift checks: passed.
+- Ruff lint and format checks: passed.
+- Dependency and production-deployment checks: passed.
+- Desktop and 390 x 844 rendered flows for both demo roles: passed.
+
+### Bugs Found
+
+Ruff found one extra blank line in the authentication view. The repository has no local
+Playwright executable or `npx` runtime.
+
+### Fixes
+
+Removed the formatting issue and used the available in-app browser against an isolated,
+disposable SQLite database without installing a new frontend dependency.
+
+### Result
+
+Working. Judge access is hidden and the endpoint returns 404 unless the environment flag
+is explicitly enabled.
+
+### Known Limitations
+
+While enabled, any visitor can enter the two synthetic demo accounts and modify their
+shared demo state. This mode must never be used with real patient data and should be
+disabled immediately after judging.
+
+Production seeding should use `seed_demo --unusable-password` so the fixed public demo
+identities cannot also authenticate through the credential form.

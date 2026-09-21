@@ -9,6 +9,7 @@
 | Referral selection, consent, tracking and clinician workspace | COMPLETE |
 | Create Referral product workflow, history and detail | COMPLETE |
 | Global Search Bar | COMPLETE |
+| Temporary Judge Demo Access | COMPLETE; environment-gated and reversible |
 | Language Switcher | PLANNED; requires explicit `GO` after Feature 2 |
 | AI4Bharat integration | PLANNED; requires completion and approval of Feature 3 |
 | Privacy/access history and emergency account view | COMPLETE |

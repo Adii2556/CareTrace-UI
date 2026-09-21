@@ -14,3 +14,4 @@
 | 2026-09-21 | Separate the referral creator from the destination clinician and derive provider snapshots from authenticated profiles | Preserve who initiated a transfer without trusting submitted identity fields | Accepted |
 | 2026-09-21 | Limit referral creation to patients previously referred by the signed-in clinician | Avoid exposing an unrestricted patient directory or letting destination assignment bootstrap referring-clinician access | Accepted |
 | 2026-09-21 | Implement global search as a server-rendered, capped Django ORM results page using existing access scopes | Keep the prototype simple and prevent a search index or autocomplete endpoint from widening medical-data access | Accepted |
+| 2026-09-22 | Gate fixed-profile judge access behind a disabled-by-default environment flag and preserve normal Django sessions | Give judges frictionless access without publishing passwords or weakening downstream authorization | Accepted |
