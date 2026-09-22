@@ -42,6 +42,7 @@ credential login remains available under **Use account credentials**.
 This mode intentionally lets any visitor enter those synthetic accounts. Never enable
 it for real patient information. Disable it immediately after judging by setting
 `DJANGO_DEMO_QUICK_LOGIN=False`; no code rollback or database change is required.
+Marked demo sessions are logged out on their next request after the flag is disabled.
 The recommended deployment command gives the two demo accounts unusable passwords,
 so they cannot bypass the fixed quick-login flow through credential authentication.
 

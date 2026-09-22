@@ -452,6 +452,8 @@ and quick to revert.
 - Added a judge profile selector to the login page and retained password login in a
   collapsed fallback.
 - Added an unusable-password seeding mode for deployment-only demo identities.
+- Marked quick-login sessions and added a small middleware guard that logs them out on
+  their next request when the feature flag is disabled.
 - Documented the synthetic-data boundary and one-variable rollback procedure.
 
 ### Files Modified
@@ -460,6 +462,7 @@ and quick to revert.
 - `accounts/tests.py`
 - `accounts/urls.py`
 - `accounts/views.py`
+- `accounts/middleware.py`
 - `config/settings.py`
 - `care/management/commands/seed_demo.py`
 - `care/tests.py`
@@ -481,7 +484,7 @@ authentication state, not the schema.
 
 ### Tests Performed
 
-- Eight focused demo-login and secure-seeding tests: passed.
+- Nine focused demo-login, rollback and secure-seeding tests: passed.
 - Full Django regression suite: passed.
 - Django system and migration-drift checks: passed.
 - Ruff lint and format checks: passed.

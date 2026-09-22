@@ -26,11 +26,12 @@ Use `DJANGO_DEMO_QUICK_LOGIN`, defaulting to false, as the sole feature switch. 
 demo account seeding a one-time deployment action and preserve every downstream access
 control unchanged. Deployment seeding uses unusable passwords so the public demo
 identities cannot also be entered through credential authentication.
+Marked demo sessions are revoked on their next request after the flag is disabled.
 
 ## Verification
 
-- Eight focused tests passed, including disabled mode, CSRF, both roles,
-  role mismatch and unsafe return URL handling.
+- Nine focused tests passed, including disabled mode, rollback revocation, CSRF, both
+  roles, role mismatch, secure seeding and unsafe return URL handling.
 - Django checks, migration drift, full regression tests, Ruff, dependency checks,
   production deploy checks and static collection passed.
 - Desktop and 390 x 844 browser flows passed for patient and clinician profiles; the

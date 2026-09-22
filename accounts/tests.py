@@ -60,6 +60,16 @@ class DemoQuickLoginTests(TestCase):
         self.assertEqual(self.client.session["_auth_user_id"], str(self.clinician.pk))
 
     @override_settings(DEMO_QUICK_LOGIN_ENABLED=True)
+    def test_disabling_demo_access_revokes_an_existing_demo_session(self):
+        self.client.post(self.demo_login_url, {"profile": "patient"})
+
+        with self.settings(DEMO_QUICK_LOGIN_ENABLED=False):
+            response = self.client.get(reverse("care:home"))
+
+        self.assertRedirects(response, self.login_url, fetch_redirect_response=False)
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    @override_settings(DEMO_QUICK_LOGIN_ENABLED=True)
     def test_unknown_or_role_mismatched_profile_fails_closed(self):
         response = self.client.post(self.demo_login_url, {"profile": "unknown"})
         self.assertRedirects(response, self.login_url, fetch_redirect_response=False)

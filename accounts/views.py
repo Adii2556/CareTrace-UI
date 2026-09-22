@@ -10,6 +10,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 
 from .forms import CareTraceAuthenticationForm
+from .middleware import DEMO_QUICK_LOGIN_SESSION_KEY
 from .models import PatientProfile
 
 DEMO_PROFILE_ACCOUNTS = {
@@ -51,6 +52,7 @@ def demo_login(request):
         return redirect("accounts:login")
 
     login(request, user)
+    request.session[DEMO_QUICK_LOGIN_SESSION_KEY] = True
     next_url = request.POST.get("next", "")
     if next_url and url_has_allowed_host_and_scheme(
         next_url,

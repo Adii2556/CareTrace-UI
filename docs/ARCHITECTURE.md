@@ -46,7 +46,9 @@ POST-only CSRF-protected endpoint maps two fixed selections to the synthetic `an
 patient and `arjun` clinician accounts. It verifies that the account is active and has
 the expected role, rejects unsafe return URLs and starts a normal Django session. The
 feature is disabled by default and does not alter any downstream ownership, consent or
-download checks.
+download checks. Each quick-login session is marked. When the flag is disabled, a
+small middleware guard logs those sessions out on their next request so rollback does
+not leave prior demo access active.
 
 The application does not claim regulatory compliance. All committed/demo clinical
 content is fictional.
