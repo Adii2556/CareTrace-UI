@@ -11,6 +11,7 @@ This repository rebuilds the supplied CareTrace interface as a dynamic applicati
 - Django templates and forms
 - Bootstrap 5 plus project CSS
 - Vanilla JavaScript
+- HTMX 2.0.10 for progressive enhancement of authenticated GET navigation
 - WhiteNoise for collected static files in the deployed Django service
 - Optional NVIDIA API integration for plain-language record explanations
 
@@ -61,6 +62,18 @@ The project reads configuration from environment variables. Django does not pars
 - Server-validated referral status transitions
 - Privacy/access log and emergency summary
 - Plain-language record explanation with a safe unavailable/error state when NVIDIA is not configured
+
+## Application shell and navigation
+
+Authenticated pages share `templates/base_app.html`, so the sidebar, topbar and global
+assets remain mounted while Dashboard, Referrals, Records and Timeline content changes.
+HTMX enhances only internal GET navigation and global search; every URL still returns a
+complete Django page and continues to work without JavaScript. Forms that change data
+remain normal CSRF-protected Django submissions.
+
+The application deliberately disables HTMX history snapshots so medical page content
+is not cached in browser `localStorage`. Browser Back/Forward instead reloads the
+authorized URL from Django.
 
 ## Security and privacy boundaries
 
@@ -137,7 +150,7 @@ controlled only by the environment flag described above.
 - `accounts/` — role-aware profiles and authentication
 - `care/` — records, referrals, consent, access logs, forms, views, and tests
 - `ai_services/` — isolated NVIDIA API client
-- `templates/` — reusable Django template shell and feature pages
+- `templates/` — `base_app.html`, reusable shell components and feature pages
 - `static/` — CareTrace design tokens, reference styling, icons, fonts, and interaction JavaScript
 
 Medical and identity data in this repository is synthetic and intended only for demonstration and development.

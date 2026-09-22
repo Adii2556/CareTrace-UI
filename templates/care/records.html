@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_app.html" %}
 {% load caretrace_ui %}
 {% block title %}Medical Records · CareTrace{% endblock %}
 {% block content %}
@@ -29,5 +29,3 @@
   </form></div></div>
 </div>
 {% endblock %}
-{% block extra_js %}<script>if (location.hash === '#add-record') { window.addEventListener('DOMContentLoaded', () => bootstrap.Modal.getOrCreateInstance(document.getElementById('recordModal')).show()); }</script>{% endblock %}
-

@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "base_app.html" %}
 {% load caretrace_ui %}
 {% block title %}Medical Timeline · CareTrace{% endblock %}
 {% block content %}
-<div class="page-head"><div><h1>Medical Timeline</h1><p>Your health history, organized by date.</p></div>{% include "components/profile_switch.html" %}</div>
+{% include "components/page_header.html" with heading="Medical Timeline" subheading="Your health history, organized by date." show_profile_switch=True %}
 <form class="filters" method="get" role="search">
   <label class="field search" for="timeline-search">{% icon "Search" %}<input id="timeline-search" name="q" value="{{ query }}" placeholder="Search your timeline"><button class="btn compact" type="submit">Search</button></label>
   <a class="btn" href="{% url 'care:timeline' %}">{% icon "Filter" %}Clear</a>

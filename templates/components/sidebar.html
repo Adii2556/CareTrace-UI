@@ -1,13 +1,13 @@
 {% load caretrace_ui %}
-<aside class="sidebar" id="sidebar" aria-label="Primary navigation">
-  <a class="brand" href="{% url 'care:home' %}" aria-label="CareTrace home">
+<aside class="sidebar" id="sidebar" aria-label="Primary navigation" hx-boost="true" hx-target="#app-content" hx-select="#app-content" hx-swap="outerHTML show:window:top" hx-push-url="true" hx-indicator="#app-loading">
+  <a class="brand" href="{% url 'care:home' %}" aria-label="CareTrace home" data-nav="dashboard">
     <span class="brandmark">{% icon "Route" %}</span>CareTrace
   </a>
   {% if profile.role == 'clinician' %}
     <div class="eyebrow workspace-label">Clinical workspace</div>
-    <nav>
-      <a class="nav-item" href="{% url 'care:home' %}">{% icon "LayoutDashboard" %}<span>Workspace</span></a>
-      <a class="nav-item {% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}">{% icon "Route" %}<span>Referrals</span></a>
+    <nav class="app-navigation">
+      <a class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}" href="{% url 'care:home' %}" data-nav="dashboard">{% icon "LayoutDashboard" %}<span>Workspace</span></a>
+      <a class="nav-item {% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}" data-nav="referrals">{% icon "Route" %}<span>Referrals</span></a>
       <span class="nav-item nav-disabled">{% icon "Users" %}<span>Patients</span></span>
       <span class="nav-item nav-disabled">{% icon "ShieldCheck" %}<span>Access History</span></span>
     </nav>
@@ -18,16 +18,16 @@
     </div>
   {% else %}
     <div class="eyebrow workspace-label">Your health</div>
-    <nav>
-      <a class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}" href="{% url 'care:dashboard' %}">{% icon "LayoutDashboard" %}<span>Dashboard</span></a>
-      <a class="nav-item {% if active_nav == 'timeline' %}active{% endif %}" href="{% url 'care:timeline' %}">{% icon "History" %}<span>Timeline</span></a>
-      <a class="nav-item {% if active_nav == 'records' %}active{% endif %}" href="{% url 'care:records' %}">{% icon "Files" %}<span>Records</span></a>
-      <a class="nav-item {% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}">{% icon "Route" %}<span>Referrals</span>{% if pending_referral_count %}<span class="nav-count">{{ pending_referral_count }}</span>{% endif %}</a>
-      {% if default_explain_record %}<a class="nav-item {% if active_nav == 'explain' %}active{% endif %}" href="{% url 'care:explain_record' default_explain_record.id %}">{% icon "BookOpen" %}<span>Explain</span></a>{% endif %}
+    <nav class="app-navigation">
+      <a class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}" href="{% url 'care:dashboard' %}" data-nav="dashboard">{% icon "LayoutDashboard" %}<span>Dashboard</span></a>
+      <a class="nav-item {% if active_nav == 'timeline' %}active{% endif %}" href="{% url 'care:timeline' %}" data-nav="timeline">{% icon "History" %}<span>Timeline</span></a>
+      <a class="nav-item {% if active_nav == 'records' %}active{% endif %}" href="{% url 'care:records' %}" data-nav="records">{% icon "Files" %}<span>Records</span></a>
+      <a class="nav-item {% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}" data-nav="referrals">{% icon "Route" %}<span>Referrals</span>{% if pending_referral_count %}<span class="nav-count">{{ pending_referral_count }}</span>{% endif %}</a>
+      {% if default_explain_record %}<a class="nav-item {% if active_nav == 'explain' %}active{% endif %}" href="{% url 'care:explain_record' default_explain_record.id %}" data-nav="explain">{% icon "BookOpen" %}<span>Explain</span></a>{% endif %}
     </nav>
     <div class="sidebar-bottom">
-      <a class="nav-item {% if active_nav == 'privacy' %}active{% endif %}" href="{% url 'care:privacy_access' %}">{% icon "ShieldCheck" %}<span>Privacy &amp; Access</span></a>
-      <a class="nav-item {% if active_nav == 'profile' %}active{% endif %}" href="{% url 'care:emergency_profile' %}">{% icon "UserRound" %}<span>Profile</span></a>
+      <a class="nav-item {% if active_nav == 'privacy' %}active{% endif %}" href="{% url 'care:privacy_access' %}" data-nav="privacy">{% icon "ShieldCheck" %}<span>Privacy &amp; Access</span></a>
+      <a class="nav-item {% if active_nav == 'profile' %}active{% endif %}" href="{% url 'care:emergency_profile' %}" data-nav="profile">{% icon "UserRound" %}<span>Profile</span></a>
       <span class="nav-item nav-disabled">{% icon "Settings" %}<span>Settings</span></span>
       <div class="sidebar-foot">Your health. Your control.<br>Shared only with your consent.</div>
     </div>

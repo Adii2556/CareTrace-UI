@@ -1,8 +1,7 @@
-{% extends "base.html" %}
+{% extends "base_app.html" %}
 {% load caretrace_ui %}
 {% block title %}Privacy & Access · CareTrace{% endblock %}
 {% block content %}
-<div class="page-head"><div><h1>Privacy &amp; Access</h1><p>See when referral records were shared or viewed.</p></div>{% include "components/profile_switch.html" %}</div>
+{% include "components/page_header.html" with heading="Privacy & Access" subheading="See when referral records were shared or viewed." show_profile_switch=True %}
 <div class="split privacy-layout"><section class="panel flush"><div class="panel-head"><h3>Access history</h3><span class="small muted">{{ logs.count }} events</span></div>{% for log in logs %}<article class="audit-entry"><span class="iconbox">{% icon "Eye" %}</span><div class="grow"><h3>{{ log.actor_name }}</h3><p>{{ log.organization }}</p><div class="action">{{ log.action }}</div><p>Referral {{ log.referral.reference_id }}</p></div><time class="time" datetime="{{ log.occurred_at|date:'c' }}">{{ log.occurred_at|date:"d M Y" }}<br>{{ log.occurred_at|date:"h:i A" }}</time></article>{% empty %}<div class="empty-state">No access has been recorded yet.</div>{% endfor %}</section><aside class="stack"><div class="panel privacy-surface"><div class="row gap8"><span class="iconbox">{% icon "ShieldCheck" %}</span><h3>Active referral access</h3></div>{% for referral in referrals %}<div class="fact"><div class="label">{{ referral.reason }}</div><div class="value">{{ referral.receiving_provider }}</div><p class="small muted mt8">{{ referral.selected_records.count }} records · {{ referral.get_status_display }}</p><a class="link small" href="{% url 'care:referral_tracking' referral.id %}">View sharing details</a></div>{% empty %}<p class="small muted mt16">No referrals yet.</p>{% endfor %}</div><div class="notice teal">{% icon "LockKeyhole" %}<div><strong>Access leaves a record</strong><br>CareTrace shows referral sharing events so patients can review them.</div></div></aside></div>
 {% endblock %}
-

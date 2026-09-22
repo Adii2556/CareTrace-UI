@@ -126,6 +126,39 @@ class CareTraceTestCase(TestCase):
             response, f"{reverse('accounts:login')}?next={reverse('care:dashboard')}"
         )
 
+    def test_primary_patient_pages_share_authenticated_app_shell(self):
+        self.client.login(username="patient", password="StrongPass!42")
+        route_names = ("dashboard", "referral_list", "records", "timeline")
+
+        for route_name in route_names:
+            with self.subTest(route=route_name):
+                response = self.client.get(reverse(f"care:{route_name}"))
+                self.assertEqual(response.status_code, 200)
+                self.assertTemplateUsed(response, "base_app.html")
+                self.assertContains(response, 'id="app-content"', count=1)
+                self.assertContains(response, "htmx.min.js", count=1)
+
+    def test_shell_navigation_progressively_enhances_get_requests(self):
+        self.client.login(username="patient", password="StrongPass!42")
+        response = self.client.get(reverse("care:dashboard"))
+
+        self.assertContains(response, 'hx-target="#app-content"')
+        self.assertContains(response, 'hx-select="#app-content"')
+        self.assertContains(response, 'hx-push-url="true"')
+        self.assertContains(response, 'hx-indicator="#app-loading"')
+        self.assertContains(response, 'hx-history="false"', count=1)
+        self.assertContains(response, 'data-nav="records"')
+        self.assertContains(response, 'data-nav="timeline"')
+
+    def test_htmx_request_keeps_complete_django_response_as_fallback(self):
+        self.client.login(username="patient", password="StrongPass!42")
+        response = self.client.get(reverse("care:records"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<!doctype html>")
+        self.assertContains(response, 'id="app-content"', count=1)
+        self.assertContains(response, "Medical Records")
+
     def test_only_clinicians_can_open_create_referral(self):
         self.client.login(username="patient", password="StrongPass!42")
         self.assertEqual(self.client.get(reverse("care:create_referral")).status_code, 403)

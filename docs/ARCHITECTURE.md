@@ -19,6 +19,26 @@ Browser
 - `static/`: generated CareTrace styling, Manrope, Lucide icon data, QR and vanilla JavaScript.
 - `docs/design/caretrace-ui/`: preserved visual source pack and verification artifacts.
 
+## Authenticated application shell
+
+Authenticated feature templates extend `templates/base_app.html`. The sidebar,
+topbar, footer, Bootstrap, shared styles and shared scripts are loaded once around the
+replaceable `#app-content` region. `templates/base.html` remains a compatibility alias
+for older templates.
+
+Primary sidebar/mobile navigation and global search use pinned HTMX 2.0.10 as a
+progressive enhancement for GET requests. Responses remain complete Django pages;
+`hx-select` extracts the main region, `hx-push-url` keeps normal URLs, and Back/Forward
+continues to work. State-changing actions, file uploads, consent and logout remain
+normal CSRF-protected Django forms. If JavaScript or the CDN is unavailable, links and
+forms retain standard full-page behavior.
+
+Because authenticated pages can contain medical information, the shell sets
+`hx-history="false"`. HTMX therefore does not persist page snapshots to browser
+`localStorage`; history restoration requests the protected Django URL again. Shared
+vanilla JavaScript reinitializes page-local controls after content swaps and keeps the
+active navigation state synchronized.
+
 ## Security boundaries
 
 Patient pages require the patient role and always query through `request.user`.

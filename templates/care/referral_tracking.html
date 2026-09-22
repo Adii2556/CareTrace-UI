@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_app.html" %}
 {% load caretrace_ui %}
 {% block title %}Referral Tracking · CareTrace{% endblock %}
 {% block content %}
@@ -10,4 +10,3 @@
   <aside class="stack"><div class="panel"><div class="eyebrow">Referral summary</div><h3 class="mt8">{{ referral.reference_id }}</h3><div class="fact"><div class="label">Referred from</div><div class="value">{{ referral.referring_provider }}</div></div><div class="fact"><div class="label">Receiving provider</div><div class="value">{{ referral.receiving_provider }}</div></div><div class="fact"><div class="label">Priority</div><div class="value">{{ referral.priority }}</div></div></div><div class="notice teal">{% icon "LockKeyhole" %}<div><strong>Shared record package</strong><br>{{ referral.selected_records.count }} approved records. Other history remains private.</div></div></aside>
 </div>
 {% endblock %}
-

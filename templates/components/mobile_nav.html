@@ -1,8 +1,8 @@
 {% load caretrace_ui %}
-<nav class="mobile-bottom-nav" aria-label="Mobile navigation">
-  <a class="{% if active_nav == 'dashboard' %}active{% endif %}" href="{% url 'care:dashboard' %}">{% icon "LayoutDashboard" %}<span>Home</span></a>
-  <a class="{% if active_nav == 'timeline' %}active{% endif %}" href="{% url 'care:timeline' %}">{% icon "History" %}<span>Timeline</span></a>
-  <a class="{% if active_nav == 'records' %}active{% endif %}" href="{% url 'care:records' %}">{% icon "Files" %}<span>Records</span></a>
-  <a class="{% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}">{% icon "Route" %}<span>Care</span></a>
-  <a class="{% if active_nav == 'profile' %}active{% endif %}" href="{% url 'care:emergency_profile' %}">{% icon "UserRound" %}<span>Profile</span></a>
+<nav class="mobile-bottom-nav app-navigation" aria-label="Mobile navigation" hx-boost="true" hx-target="#app-content" hx-select="#app-content" hx-swap="outerHTML show:window:top" hx-push-url="true" hx-indicator="#app-loading">
+  <a class="{% if active_nav == 'dashboard' %}active{% endif %}" href="{% url 'care:dashboard' %}" data-nav="dashboard">{% icon "LayoutDashboard" %}<span>Home</span></a>
+  <a class="{% if active_nav == 'timeline' %}active{% endif %}" href="{% url 'care:timeline' %}" data-nav="timeline">{% icon "History" %}<span>Timeline</span></a>
+  <a class="{% if active_nav == 'records' %}active{% endif %}" href="{% url 'care:records' %}" data-nav="records">{% icon "Files" %}<span>Records</span></a>
+  <a class="{% if active_nav == 'referrals' %}active{% endif %}" href="{% url 'care:referral_list' %}" data-nav="referrals">{% icon "Route" %}<span>Care</span></a>
+  <a class="{% if active_nav == 'profile' %}active{% endif %}" href="{% url 'care:emergency_profile' %}" data-nav="profile">{% icon "UserRound" %}<span>Profile</span></a>
 </nav>

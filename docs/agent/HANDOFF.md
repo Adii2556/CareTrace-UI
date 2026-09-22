@@ -2,7 +2,7 @@
 
 ## Step
 
-Temporary Judge Demo Access.
+Shared authenticated application shell and HTMX navigation.
 
 ## Status
 
@@ -10,45 +10,45 @@ COMPLETE — implemented and verified on 2026-09-22.
 
 ## Completed
 
-Added a disabled-by-default judge mode that lets a visitor choose the fixed fictional
-patient or hospital/clinician profile without receiving a password. The POST-only
-endpoint verifies CSRF, account activity and the expected role before starting a normal
-Django session. Normal credential login remains available as a collapsed fallback.
+Added `base_app.html` as the shared authenticated shell, extracted footer/loading/page
+header components and updated all authenticated feature templates to use the shell.
+Primary GET navigation and global search now replace only `#app-content`, push normal
+URLs and show a restrained loading bar. Shared JavaScript reinitializes page controls
+and synchronizes active navigation after swaps and browser history restoration.
+
+Standardized shell sizing with shared CSS variables, stable scrollbar gutters and
+responsive overflow fixes. HTMX history snapshots are disabled to prevent medical page
+content from being stored in browser `localStorage`.
 
 ## Files
 
-Authentication view/URL/tests, login template, shared CSS, settings, `.env.example`,
-README, architecture/decision/roadmap/current-step docs and `DEVELOPMENT_LOG.md`.
+Authenticated templates and shell components, `static/css/app.css`,
+`static/js/app.js`, `care/tests.py`, README, architecture, decision, roadmap,
+current-step, handoff and development-log documentation.
 
 ## Decisions
 
-Use `DJANGO_DEMO_QUICK_LOGIN`, defaulting to false, as the sole feature switch. Keep
-demo account seeding a one-time deployment action and preserve every downstream access
-control unchanged. Deployment seeding uses unusable passwords so the public demo
-identities cannot also be entered through credential authentication.
-Marked demo sessions are revoked on their next request after the flag is disabled.
+Use HTMX only as progressive enhancement for authenticated GET navigation. Keep every
+response as a complete Django page and leave all state-changing forms on their existing
+CSRF-protected full-request paths. Keep `base.html` as a compatibility alias.
 
 ## Verification
 
-- Nine focused tests passed, including disabled mode, rollback revocation, CSRF, both
-  roles, role mismatch, secure seeding and unsafe return URL handling.
-- Django checks, migration drift, full regression tests, Ruff, dependency checks,
-  production deploy checks and static collection passed.
-- Desktop and 390 x 844 browser flows passed for patient and clinician profiles; the
-  credential fallback remained usable with no console warnings/errors or overflow.
-- Railway deployed the feature at `https://web-production-ef1db6.up.railway.app/`.
-  Both public profile flows passed, `/health/` returned 200, GET on the POST-only
-  endpoint returned 405 and a POST without CSRF returned 403.
-- Production demo accounts were seeded with unusable passwords and verified as
-  `has_usable_password() == False`.
+- Three focused shared-shell/HTMX tests passed; the full 44-test suite passed.
+- Django checks and migration drift checks passed; no migration was created.
+- Ruff lint/format, JavaScript syntax and whitespace checks passed.
+- Desktop/tablet and 390 x 844 browser flows passed across Dashboard, Referrals,
+  Records and Timeline. URLs, titles, active navigation, Back/Forward, the record modal,
+  one-time asset loading and zero document overflow were verified.
+- A clean browser run reported no warnings or errors.
 
 ## Issues
 
-The Browser plugin and local Playwright commands were unavailable, so rendered QA used
-the available in-app browser controls against isolated local data and the Railway demo.
-No schema or dependency change was required.
+Rendered QA found and fixed tablet referral-action overflow, mobile timeline/filter
+overflow, and stale active navigation after browser history restoration. The feature
+adds one pinned CDN dependency; full-page navigation remains the fallback if it is
+unavailable.
 
 ## Next
 
-After judging, set `DJANGO_DEMO_QUICK_LOGIN=False` in Railway and deploy that one
-variable change. Language Switcher remains approval-gated and was not started.
+Language Switcher remains the next approval-gated product feature. It was not started.

@@ -1,0 +1,7 @@
+<div class="page-head">
+  <div>
+    <h1>{{ heading }}</h1>
+    {% if subheading %}<p>{{ subheading }}</p>{% endif %}
+  </div>
+  {% if show_profile_switch %}{% include "components/profile_switch.html" %}{% endif %}
+</div>

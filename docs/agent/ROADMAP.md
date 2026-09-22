@@ -15,6 +15,7 @@
 | Privacy/access history and emergency account view | COMPLETE |
 | NVIDIA/Nemotron service boundary and safe fallback | COMPLETE |
 | Integrated responsive CareTrace UI | COMPLETE |
+| Shared authenticated app shell and HTMX navigation | COMPLETE; progressive enhancement with uncached medical history state |
 | Security checks, automated tests and CI | COMPLETE |
 | Railway-compatible configuration | COMPLETE |
 | Public Railway hosting and persistent-volume provisioning | COMPLETE |

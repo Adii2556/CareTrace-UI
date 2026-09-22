@@ -1,7 +1,7 @@
 {% load caretrace_ui %}
 <header class="topbar">
   <button class="mobile-menu-toggle" type="button" data-sidebar-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation">{% icon "LayoutDashboard" %}</button>
-  <form class="topbar-search" role="search" method="get" action="{% url 'care:global_search' %}">
+  <form class="topbar-search" role="search" method="get" action="{% url 'care:global_search' %}" hx-boost="true" hx-target="#app-content" hx-select="#app-content" hx-swap="outerHTML show:window:top" hx-push-url="true" hx-indicator="#app-loading">
     <label class="visually-hidden" for="global-search">Search CareTrace</label>
     {% icon "Search" %}<input id="global-search" type="search" name="q" value="{{ global_query|default:'' }}" maxlength="100" autocomplete="off" placeholder="{% if profile.role == 'clinician' %}Search referrals or patients{% else %}Search your health information{% endif %}"><kbd aria-hidden="true">/</kbd>
     <button class="visually-hidden" type="submit">Search</button>

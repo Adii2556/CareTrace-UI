@@ -525,3 +525,122 @@ identities cannot also authenticate through the credential form.
   response for GET on the POST-only endpoint, and a 403 response for POST without CSRF.
 - Confirmed the login response includes secure CSRF cookies, HSTS, frame denial,
   content-type protection, same-origin referrer policy and no-store caching.
+
+## Shared Authenticated App Shell and HTMX Navigation
+
+### Objective
+
+Make authenticated CareTrace pages behave like one stable, responsive application
+without changing the Django backend, URLs, models, permissions or clinical workflows.
+
+### Changes
+
+- Added `base_app.html` as the authenticated shell and kept `base.html` as a
+  compatibility alias.
+- Moved footer, loading state and repeated simple page-header markup into reusable
+  template components.
+- Updated every authenticated CareTrace feature template to extend the shared shell.
+- Added pinned HTMX 2.0.10 progressive enhancement to primary GET navigation and
+  global search with `hx-select`, `hx-target` and `hx-push-url`.
+- Kept uploads, consent, logout, referral transitions and every other state-changing
+  form as normal CSRF-protected Django submissions.
+- Added active-navigation and page-control reinitialization after swaps and history
+  restoration, including the existing medical-record modal behavior.
+- Added shared shell sizing tokens, `scrollbar-gutter: stable`, a subtle loading bar,
+  and responsive overflow corrections for tablet and mobile layouts.
+- Disabled HTMX history snapshots so authenticated medical page content is not stored
+  in browser `localStorage`; Back/Forward re-requests protected Django URLs.
+
+### Files Modified
+
+- `care/tests.py`
+- `static/css/app.css`
+- `static/js/app.js`
+- `templates/base.html`
+- `templates/base_app.html`
+- `templates/components/app_footer.html`
+- `templates/components/app_loading.html`
+- `templates/components/mobile_nav.html`
+- `templates/components/page_header.html`
+- `templates/components/sidebar.html`
+- `templates/components/topbar.html`
+- `templates/care/dashboard.html`
+- `templates/care/doctor_workspace.html`
+- `templates/care/emergency_profile.html`
+- `templates/care/patient_consent.html`
+- `templates/care/privacy_access.html`
+- `templates/care/record_explainer.html`
+- `templates/care/records.html`
+- `templates/care/referral_create.html`
+- `templates/care/referral_detail.html`
+- `templates/care/referral_list.html`
+- `templates/care/referral_tracking.html`
+- `templates/care/search_results.html`
+- `templates/care/select_records.html`
+- `templates/care/timeline.html`
+- `README.md`
+- `docs/ARCHITECTURE.md`
+- `docs/agent/CURRENT_STEP.md`
+- `docs/agent/DECISIONS.md`
+- `docs/agent/HANDOFF.md`
+- `docs/agent/ROADMAP.md`
+- `DEVELOPMENT_LOG.md`
+
+### Database Changes
+
+None.
+
+### Tests Performed
+
+- Three focused authenticated-shell and HTMX response tests: passed.
+- `python manage.py test`: all 44 tests passed.
+- `python manage.py check`: passed.
+- `python manage.py makemigrations --check --dry-run`: no changes detected.
+- `python -m ruff check .`: passed.
+- `python -m ruff format --check .`: all 55 Python files formatted.
+- `node --check static/js/app.js`: passed.
+- `git diff --check`: passed.
+- Rendered Dashboard → Referrals → Records → Timeline checks at desktop/tablet and
+  390 x 844 mobile widths: passed with correct URLs, titles and active navigation.
+- Browser Back/Forward, persistent shell state, existing record modal, one-time asset
+  loading, overflow and console checks: passed; no final warnings or errors.
+
+### Bugs Found
+
+- The tablet dashboard referral actions could extend beyond the viewport.
+- Timeline filter actions and status chips caused document-level mobile overflow.
+- Browser Back restored the correct content and URL but initially left the previous
+  navigation item active.
+- The first history restoration path exposed an unsafe assumption that every HTMX
+  event contains `detail.target`, producing a console error.
+- HTMX's default history cache would have stored authenticated page snapshots in
+  browser `localStorage`.
+- The first focused test command used system Python, where Django was unavailable;
+  the repository virtual environment was required.
+- The first deploy check used intentionally disposable placeholder security values,
+  so Django correctly warned about secret entropy and optional HSTS flags.
+
+### Fixes
+
+- Added bounded responsive wrapping/stacking rules instead of hiding overflow.
+- Synchronized navigation from the authoritative history path and safely handled HTMX
+  events without a target.
+- Added `hx-history="false"` to the persistent authenticated shell so history remains
+  functional without local snapshots of medical content.
+- Reran all Python checks through `.venv` and repeated the deploy check with temporary
+  production-shaped values and both reviewed HSTS flags enabled; it then passed with
+  no warnings.
+
+### Result
+
+Working. The verified authenticated pages now share a stable shell and use progressive
+partial navigation while retaining complete Django page fallbacks.
+
+### Known Limitations
+
+- HTMX is loaded from a pinned CDN with Subresource Integrity. If it is unavailable,
+  navigation falls back to normal full-page requests.
+- Complex multi-step referral creation remains a full page by design; only the existing
+  low-risk record-create interaction uses a modal in this increment.
+- No Family feature was added because the current repository has no approved Family
+  model or route.

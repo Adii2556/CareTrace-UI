@@ -1,29 +1,36 @@
 # Current development step
 
-Step: Temporary Judge Demo Access
+Step: Shared authenticated application shell and HTMX navigation
 Status: COMPLETE
 
 ## Objective
 
-Let hackathon judges enter one of two fixed fictional CareTrace profiles from the login
-page without receiving or typing credentials. Preserve Django sessions, CSRF protection,
-role checks and the normal credential form.
+Make authenticated CareTrace pages feel like one stable application by consolidating
+their shell and progressively enhancing primary GET navigation with HTMX. Preserve all
+normal Django URLs, security controls, forms and non-JavaScript behavior.
 
 ## Feature boundary
 
-- Gate the feature behind `DJANGO_DEMO_QUICK_LOGIN`, disabled by default.
-- Map only the fixed `ananya` patient and `arjun` clinician demo accounts.
-- Use a POST-only, CSRF-protected Django endpoint and reject missing, inactive or
-  role-mismatched accounts.
-- Keep all existing authorization and medical-data access rules unchanged.
-- Make rollback a single environment-variable change.
+- Introduce `base_app.html` as the authenticated shell and keep `base.html` as a
+  compatibility alias.
+- Keep sidebar, topbar, footer and global assets outside the replaceable main region.
+- Enhance only internal GET navigation/search with HTMX and `hx-push-url`.
+- Keep state-changing forms as normal CSRF-protected Django submissions.
+- Reinitialize page-local vanilla JavaScript after HTMX swaps.
+- Standardize shell dimensions and responsive overflow behavior without redesigning
+  the established CareTrace visual language.
+- Verify Dashboard, Referrals, Records and Timeline navigation at desktop and mobile
+  widths, including browser history and no shell replacement.
 - Do not begin Language Switcher or any later roadmap feature.
 
 ## Result
 
-The login page now presents an environment-gated selector for the fixed fictional
-patient and clinician profiles. The endpoint is POST-only, CSRF-protected, validates
-account activity and role, rejects unsafe return URLs and creates a normal Django
-session. Password login remains available as a collapsed fallback. Desktop and mobile
-browser flows for both roles passed; disabling `DJANGO_DEMO_QUICK_LOGIN` hides the UI
-and returns 404 from the endpoint.
+Authenticated pages now use `base_app.html`, with the sidebar, topbar, footer and
+global assets outside a single replaceable `#app-content` region. Primary GET
+navigation and global search use pinned HTMX progressive enhancement with pushed URLs;
+all normal responses and state-changing forms retain standard Django behavior. The
+shell has stable responsive dimensions, a restrained loading indicator and no
+document-level overflow on the verified Dashboard, Referrals, Records and Timeline
+flows. HTMX history snapshots are embargoed from `localStorage`; Back and Forward
+restore content through authenticated server requests. Automated and rendered browser
+verification passed.
